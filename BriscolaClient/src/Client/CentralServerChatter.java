@@ -34,7 +34,7 @@ public class CentralServerChatter extends Thread{
             try {
                 Thread.sleep(10);
                 String message = readFromSocket();
-                System.out.println(message);
+                System.out.println("sto ricevendo " + message);
                 decodeMessage(message);
             } catch (InterruptedException ex) {
             } catch (IOException ex) {

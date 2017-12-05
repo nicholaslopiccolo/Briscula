@@ -34,9 +34,9 @@ public class ServerProtocol {
     public static final String briscola = "11.";
     
     public static final String roomHeader = "12.";
-    public static final String enterRoom = "ent.";//12.ent.roomname
-    public static final String sync_room = "syn.";
-    public static final String get_room_name = "get.";
+//    public static final String enterRoom = "ent.";//12.ent.roomname
+//    public static final String sync_room = "syn.";
+//    public static final String get_room_name = "get.";
     public static final String create_room_2p = "cr2.";
     public static final String create_room_4p = "cr4.";
     public static final String remove_room = "rmv.";
@@ -88,7 +88,7 @@ public class ServerProtocol {
                 break;
             }
             
-            case messagechat: { pacchetto = messageChat(msg); break;}
+//            case messagechat: { pacchetto = messageChat(msg); break;}
 
             case roomHeader: {
                 identifier = getIdentifier(msg);
@@ -205,6 +205,6 @@ public class ServerProtocol {
     //Riceve il saluto del nuovo client connesso **
     private void receiveBootstrap(String msg) {
         user.setNickname(getContent(msg)); 
-        System.out.println("bootstrap " + user.getNickname());
+        System.out.println(user.getNickname() + " e' entrato");
     }
 }

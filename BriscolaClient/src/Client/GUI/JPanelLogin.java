@@ -426,19 +426,21 @@ public class JPanelLogin extends javax.swing.JPanel {
 
     private void JButtonInvioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonInvioActionPerformed
         //codice relative all'avvio del client
-        String addr = TextIP.getText();
-        Main.clientThread.connect(addr, 4444);
         
         if(TextNickname.getText().isEmpty() && TextIP.getText().isEmpty()){
             TextNickname.setText("ERROR");
             TextIP.setText("ERROR");
         }
         else{
+            String addr = TextIP.getText();
+            Main.clientThread.connect(addr, 4444);
+            nome = TextNickname.getText();
             //  HOST
             if(RBTwoP.isSelected()){
+                clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
+//                clientThread.writeToServer(protocol.createRoom2p(addr));//invio il pacchetto per la creazione
                 Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.new2PGame);
-                clientThread.writeToServer(protocol.createRoom2p(addr));//invio il pacchetto per la creazione
+                Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
@@ -446,19 +448,28 @@ public class JPanelLogin extends javax.swing.JPanel {
                 
             }
             if(RBFourP.isSelected()){
+                clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
+//                clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
                 Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.new4PGame);
-                clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
+                Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new4PGame.validate();
                 Main.new4PGame.repaint();
                 Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                /*
+                Main.menu.getContentPane().removeAll();
+                Main.menu.add(Main.new4PGame);
+                Main.menu.pack();
+                Main.new4PGame.validate();
+                Main.new4PGame.repaint();
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                */
             }
             //  CLIENT
             if(RBClient.isSelected()){
+                clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.attesa);
-//                protocol.(TextIP.getText());
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
@@ -535,8 +546,7 @@ public class JPanelLogin extends javax.swing.JPanel {
     private void JTextFieldNomeStanzaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextFieldNomeStanzaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_JTextFieldNomeStanzaActionPerformed
-
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup ButtonGroupGiocatori;
     private javax.swing.ButtonGroup ButtonGroupServizio;

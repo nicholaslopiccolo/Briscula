@@ -77,12 +77,12 @@ public class New2PGame extends javax.swing.JPanel {
         game = this;
         this.setBackground(Color.black);
         cardBack = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG11 = ImageIO.read(this.getClass().getResource("../Immagini/01d.png"));
-        imageG12 = ImageIO.read(this.getClass().getResource("../Immagini/02d.png"));
-        imageG13 = ImageIO.read(this.getClass().getResource("../Immagini/03d.png"));
-        imageG21 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG22 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG23 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
+        imageG11 = paint("01d");
+        imageG12 = paint("02d");
+        imageG13 = paint("03d");
+        imageG21 = paint("yugiohVerticale");
+        imageG22 = paint("yugiohVerticale");
+        imageG23 = paint("yugiohVerticale");
         
         random = new Random();
         sceltaTav = random.nextInt(4);
@@ -781,7 +781,10 @@ public class New2PGame extends javax.swing.JPanel {
         cardG13played = true;
         repaint();
     }//GEN-LAST:event_labelCartaG13MouseClicked
-
+    //metodi statici
+    private BufferedImage paint(String carta) throws IOException {
+        return ImageIO.read(this.getClass().getResource("../Immagini/" + carta + ".png"));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel labelBriscola;

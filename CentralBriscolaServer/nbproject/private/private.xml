@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/n.lo%20piccolo/Desktop/Briscula-master/Briscula-master/CentralBriscolaServer/src/server/BriskServer.java</file>
-            <file>file:/C:/Users/n.lo%20piccolo/Desktop/Briscula-master/Briscula-master/CentralBriscolaServer/src/centralbriscolaserver/ServerProtocol.java</file>
-            <file>file:/C:/Users/n.lo%20piccolo/Desktop/Briscula-master/Briscula-master/CentralBriscolaServer/src/centralbriscolaserver/User.java</file>
+            <file>file:/C:/Users/giokk/Desktop/Briscula/CentralBriscolaServer/src/centralbriscolaserver/ServerProtocol.java</file>
+            <file>file:/C:/Users/giokk/Desktop/Briscula/CentralBriscolaServer/src/centralbriscolaserver/UserSocket.java</file>
+            <file>file:/C:/Users/giokk/Desktop/Briscula/CentralBriscolaServer/src/server/LogicApplicativa/MainBrain.java</file>
         </group>
     </open-files>
 </project-private>

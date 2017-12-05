@@ -82,7 +82,7 @@ public class ClientProtocol {
         return msg.substring(3);
     }
     //metodo di spacchettamento *?
-    public String route(String msg){
+    public String route(String msg) throws IOException{
         
         String  header = getHeader(msg);
         String identifier = null;
@@ -102,8 +102,8 @@ public class ClientProtocol {
             case cardHeader: {
                 identifier = getIdentifier(msg);
                 switch(identifier) {
-                    case get_mano: {getMano(msg); break;}
-//                    case get_card: { getCard(msg); break;}
+//                    case get_mano: {getMano(msg); break;}
+                    case get_card: { getCard(msg); break;}
                 }
                 break;}
             
@@ -128,16 +128,18 @@ public class ClientProtocol {
     //il pacchetto conterrà header+nome es. 01.pippo
     //solo invio al server **
     public String sendBootstrap(String nome) {
-        pacchetto = bootstrap;
-        pacchetto = pacchetto + nome;
+        pacchetto = bootstrap + nome;
+        System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
     //Questo metodo ritorna il giocatore che deve giocare la carta *?
+    //  RICEVE
     public void turnoGiocatore(String msg) {
         turno = getContent(msg);
         //turno contiene il nro del giocatore che deve giocare la carta 
     }
     //ricezione nuovo utente entrato nella stanza SERVER *?
+    //  RICEVE
     public void joinGame(String msg) {
         String nro = null;
         String nick = null;
@@ -151,6 +153,7 @@ public class ClientProtocol {
         }
     }
     //**
+    //  RICEVE
     public void exitGame(String msg) {
         String exit = null;
         exit = getContentId(msg);
@@ -196,34 +199,40 @@ public class ClientProtocol {
     public String playCard(String carta, int position){
         //posizione.carta
         posizione_mancante = Integer.toString(position);
-        return cardHeader + play_card + Integer.toString(position)+"."+ carta; 
+        pacchetto = cardHeader + play_card + posizione_mancante + "." + carta;
+        System.out.println("Sto inviando: " + pacchetto);
+        return pacchetto; 
     }
     //*-
+    /*
     public String syncRoom(String msg) {
         pacchetto = getIdentifier(msg);
         return pacchetto;    
     }
-    //*-
+    */
+    //**
+    /*
     public void UpdateRoomName(String roomName) {
         String room;
         room = getContentId(roomName);
         JPanelLogin.updateRooms(room);
-    }
-    //*-
+    }*/
+    //**
     public String createRoom2p(String ip) {
         pacchetto = roomHeader + create_room_2p + ip;
         System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
-    //*-
+    //**
     public String createRoom4p(String ip) {
         pacchetto = roomHeader + create_room_4p + ip;
         System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
-    //*-
-    public String removeRoom(String msg) {
-        pacchetto = getIdentifier(msg);
+    //**
+    public String removeRoom(String ip) {
+        pacchetto = roomHeader + remove_room + ip;
+        System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
     

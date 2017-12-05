@@ -126,7 +126,7 @@ public final class User extends Thread{
     }
 
     public void suicide(){
-        System.out.println(nickname + " si e morto");
+        System.out.println(nickname + " e' morto");
         connectedSocket.delete();
         try{
             join();
