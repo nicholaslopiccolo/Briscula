@@ -44,9 +44,9 @@ public class ClientProtocol {
     private static final String briscola = "11.";
     
     private static final String roomHeader = "12.";
-    private static final String sync_room = "syn.";
+//    private static final String sync_room = "syn.";
     public static final String enterRoom = "ent.";//12.ent.roomname
-    private static final String get_room_name = "get.";
+//    private static final String get_room_name = "get.";
     private static final String create_room_2p = "cr2.";
     private static final String create_room_4p = "cr4.";
     private static final String remove_room = "rmv.";
@@ -114,10 +114,8 @@ public class ClientProtocol {
             case roomHeader: {
                 identifier = getIdentifier(msg);
                 switch(identifier) {
-                    case sync_room: { pacchetto = syncRoom(msg);break;}
-                    case get_room_name: { UpdateRoomName(msg);break;}
-                    case create_room_2p: { pacchetto = createRoom2p(msg);break;}
-                    case create_room_4p: { pacchetto = createRoom4p(msg);break;}
+//                    case sync_room: { pacchetto = syncRoom(msg);break;}
+//                    case get_room_name: { UpdateRoomName(msg);break;}
                     case remove_room: { pacchetto = removeRoom(msg);break;}
                 }
                 break;}
@@ -212,13 +210,15 @@ public class ClientProtocol {
         JPanelLogin.updateRooms(room);
     }
     //*-
-    public String createRoom2p(String msg) {
-        pacchetto = getIdentifier(msg);
+    public String createRoom2p(String ip) {
+        pacchetto = roomHeader + create_room_2p + ip;
+        System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
     //*-
-    public String createRoom4p(String msg) {
-        pacchetto = getIdentifier(msg);
+    public String createRoom4p(String ip) {
+        pacchetto = roomHeader + create_room_4p + ip;
+        System.out.println("Sto inviando: " + pacchetto);
         return pacchetto;
     }
     //*-

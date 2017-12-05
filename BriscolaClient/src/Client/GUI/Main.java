@@ -5,6 +5,7 @@
  */
 package Client.GUI;
 
+import Client.ClientThread;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -30,6 +31,7 @@ public class Main {
     public static JPanelLogin login;
     public static New2PGame new2PGame;
     public static New4PGame new4PGame;
+    public static ClientThread clientThread;
     public static JPanelAttesa attesa = new JPanelAttesa();
     
     /**
@@ -37,7 +39,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException  {
         // TODO code application logic here
-        
+        clientThread = new ClientThread();
         login = new JPanelLogin();
         new2PGame  = new New2PGame();
         new4PGame  = new New4PGame();

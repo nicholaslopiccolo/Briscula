@@ -8,13 +8,10 @@ package Client.GUI;
 import Client.ClientProtocol;
 import GUI.IstruzioneCarta;
 import Client.ClientThread;
-import static Client.GUI.Main.menu;
+import static Client.GUI.Main.clientThread;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -32,11 +29,8 @@ public class JPanelLogin extends javax.swing.JPanel {
      */
     
     private String nome;
-    private String indirizzo;
     private BufferedImage backgroundImage;
     private BufferedImage [] cartaIstruzione;
-    private InetAddress addr;
-    private ClientThread clientThread;
     private ClientProtocol protocol;
     
     
@@ -44,7 +38,7 @@ public class JPanelLogin extends javax.swing.JPanel {
         
         initComponents();
         
-        clientThread = new ClientThread(addr);
+        protocol = new ClientProtocol();
         
         BufferedImage [] cartaIstruzione = new BufferedImage[5];
         
@@ -432,64 +426,35 @@ public class JPanelLogin extends javax.swing.JPanel {
 
     private void JButtonInvioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonInvioActionPerformed
         //codice relative all'avvio del client
+        String addr = TextIP.getText();
+        Main.clientThread.connect(addr, 4444);
+        
         if(TextNickname.getText().isEmpty() && TextIP.getText().isEmpty()){
             TextNickname.setText("ERROR");
             TextIP.setText("ERROR");
         }
         else{
-            //server
-            /*if(RBHost.isSelected()==true) {
-                TextIP.setText("127.0.0.1");
-                if(RBTwoP.isSelected())
-                    clientThread.writeToServer("04...2");
-                else if(RBFourP.isSelected())
-                    clientThread.writeToServer("04...4");
-                
-            }/*
-            //client
-            //ClientThread c = new ClientThread(TextNickname.getText(),TextIP.getText());
-             
-            //istruzioni successive
-            nome = TextNickname.getText();
-            indirizzo = TextIP.getText();
-            System.out.println("Nome: "+nome);
-            System.out.println("Indirizzo: "+indirizzo);
-        
-            TextIP.setText("");
-            TextNickname.setText("");
-            
-            
-            //Gestione dei bottoni se non selezionati
-            /*if(RBClient.isSelected()==false || RBHost.isSelected()==false && RBTwoP.isSelected()==false || RBFourP.isSelected()==false){
-                JPanelPopup.setVisible(true);
-                JLabelPopup.setText("Selezionare servizio e numero di giocatori");
-            } else if(RBClient.isSelected()==false || RBHost.isSelected()==false && RBTwoP.isSelected()==true || RBFourP.isSelected()==true
-                    ){
-                JLabelPopup.setText("Selezionare un servizio");
-                JPanelPopup.setVisible(true);
-            } else if(RBTwoP.isSelected()==false || RBFourP.isSelected()==false && RBClient.isSelected()==true || RBHost.isSelected()==true){
-                JLabelPopup.setText("Selezionare numero di giocatori");
-                JPanelPopup.setVisible(true);
-            }*/
-            
+            //  HOST
             if(RBTwoP.isSelected()){
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.new2PGame);
-//                protocol.createRoom2p(nome);
+                clientThread.writeToServer(protocol.createRoom2p(addr));//invio il pacchetto per la creazione
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                
             }
             if(RBFourP.isSelected()){
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.new4PGame);
-//                protocol.createRoom4p(nome);
+                clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
                 Main.menu.pack();
                 Main.new4PGame.validate();
                 Main.new4PGame.repaint();
                 Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
             }
+            //  CLIENT
             if(RBClient.isSelected()){
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.attesa);

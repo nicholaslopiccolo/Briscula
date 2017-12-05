@@ -6,7 +6,6 @@
 package server;
 
 import server.LogicApplicativa.MainBrain;
-import centralbriscolaserver.CentralBriscolaServer;
 import centralbriscolaserver.UserSocket;
 import centralbriscolaserver.User;
 import java.io.IOException;

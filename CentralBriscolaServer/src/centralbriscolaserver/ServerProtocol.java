@@ -172,28 +172,28 @@ public class ServerProtocol {
        user.joinGame(roomName);
     }
     //**
-    public void sendSyncRoom(String msg) {
+    /*public void sendSyncRoom(String msg) {
         String pacchetto = roomHeader + sync_room + user.connectedServer.getRooms();
         user.connectedServer.broadcastMessage(pacchetto);
-    }
+    }*/
     
     //**
-    public void sendRoomName(String roomname) {
+    /*public void sendRoomName(String roomname) {
        String pacchetto = roomHeader + get_room_name + roomname;
        user.connectedServer.broadcastMessage(pacchetto);
-    }
+    }*/
     
     //Rivece la richiesta di una nuova stanza da due e la crea **
     public void receiveRoom2p(String msg) {
-        String roomName = getContentId(msg);
-        System.out.println("Nuovo room da due creata " + roomName);
-        user.connectedServer.createRoom(2, roomName);
+        String ip = getContentId(msg);
+        System.out.println("Nuovo room da due creata " + ip);
+        user.connectedServer.createRoom(2, ip);
     }
     //Rivece la richiesta di una nuova stanza da quattro e la crea **
     public void receiveRoom4p(String msg) {
-        String roomName = getContentId(msg);
-        System.out.println("Nuovo room da quattro creata " + roomName);
-        user.connectedServer.createRoom(4, roomName,user);
+        String ip = getContentId(msg);
+        System.out.println("Nuovo room da quattro creata: " + ip);
+        user.connectedServer.createRoom(4, ip, user);
     }
     
     //Rimuove la stanza a tutti i client connessi **

@@ -18,27 +18,29 @@ public class ClientThread extends Thread {
     private BufferedReader in;
     private PrintWriter out;
     
-    public ClientThread(InetAddress addr) {
-        try {
-            socket = new Socket("127.0.0.1",4444);
+    public ClientThread() {
+        System.out.println("ClientThread active");
+    }
+    
+    public void connect(String address, int port){
+         try {
+            socket = new Socket(address, 4444);
             CentralServerChatter csc = new CentralServerChatter(socket);
             //creazione socket
             System.out.println("ClientThread: started");
-            System.out.println("Client Socket: "+ socket);
-            
+            System.out.println("Client Socket: " + socket);
+
             //creazione stream di input da socket
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());
-            in = new BufferedReader (isr);
-            
+            in = new BufferedReader(isr);
+
             //creazione sream output da socket
             OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
             out = new PrintWriter(new BufferedWriter(osw), true);
-            
-            
-            String userInput;
             start();
         } catch (IOException e) {}
     }
+    
     public void run() {
         System.out.println("Entro nel run del clientthread\n");
         /*try {
