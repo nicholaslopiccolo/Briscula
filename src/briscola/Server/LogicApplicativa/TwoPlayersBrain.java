@@ -32,27 +32,17 @@ public class TwoPlayersBrain extends Thread{
     private TwoPlayersABU abu;
     private Carta briscola;
     private ServerProtocol protocol;
+    public int nGame = 0;
   
     
     public TwoPlayersBrain(ArrayList mazzo, ArrayList<User> users) throws IOException{
-        this.mazzo = mazzo;
         this.players = users;
         carteGiocate = new ArrayList();
         carteG1 = new ArrayList();
         carteG2 = new ArrayList();
         abu = new TwoPlayersABU();
-        calcolaBriscola();
-        calcolaBriscole();
         protocol = new ServerProtocol(users.get(0));
-        //MANDO CHI È CHI
-        users.get(0).getDecoder().sendChiSono("g1");
-        users.get(1).getDecoder().sendChiSono("g2");
-        //MANDO TURNO
-        sendTurno();
-        //MANDA BRISCOLA
-        System.out.println("2P BRAIN\tMando briscola");
-        broadcastMessage(protocol.briscola + cartaToString(briscola));
-        gioca();
+        restartGame(mazzo);
     }
     
     private void calcolaBriscola() {
@@ -69,27 +59,6 @@ public class TwoPlayersBrain extends Thread{
                 mazzo.add(i, c);
             }
         }
-    }
-    
-    public void gioca() throws IOException{
-//        while(cartaDaPescare < 39){
-            carteGiocate.clear();
-            daiCarte();
-//            eseguiTurno();
-//        }
-//        for(int i = 0; i < 2; i++){
-//            carteGiocate.clear();
-//            eseguiTurno();
-//        }
-//        System.out.println("\n\n\nFINITO\n\n\n");
-//        if(puntiG1 > puntiG2){ 
-//            System.out.println("Giocatore 1 VINCE");
-//            return "g1";
-//        } else {
-//            System.out.println("Giocatore2 VINCE");
-//            return "g2";
-//        }
-        
     }
     
     private void daiCarte(){
@@ -211,8 +180,11 @@ public class TwoPlayersBrain extends Thread{
             broadcastMessage(protocol.sendWinnerRound(winner));
             carteGiocate.clear();
             sendTurno();
+            broadcastMessage(protocol.sendPunti(puntiG1, puntiG2));
             if(mazzo.size() > 0)
                 daiCarte();
+            else
+                broadcastMessage(protocol.sendEndGame());
         }
     }
     
@@ -237,5 +209,30 @@ public class TwoPlayersBrain extends Thread{
         for (User user : players){
             user.writeSocket(pacchetto);
         }
+    }
+    
+    public void restartGame(ArrayList<Carta> m){
+        this.mazzo = m;
+        carteG1.clear();
+        carteG2.clear();
+        cartaDaPescare = 0;
+        turno = "g1";
+        calcolaBriscola();
+        calcolaBriscole();
+        //MANDO CHI È CHI
+        if(nGame%2 == 0){
+            players.get(0).getDecoder().sendChiSono("g1");
+            players.get(1).getDecoder().sendChiSono("g2");
+        } else {
+            players.get(1).getDecoder().sendChiSono("g1");
+            players.get(0).getDecoder().sendChiSono("g2");
+        }
+        //MANDO TURNO
+        sendTurno();
+        //MANDA BRISCOLA
+        System.out.println("2P BRAIN\tMando briscola");
+        broadcastMessage(protocol.briscola + cartaToString(briscola));
+        carteGiocate.clear();
+        daiCarte();
     }
 }

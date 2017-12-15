@@ -26,9 +26,8 @@ public final class User extends Thread{
     
     
     /************* CONSTRUCTORS *************/
-    public User(BriskServer server, Socket usercnt) throws IOException{
+    public User(Socket usercnt) throws IOException{
         this.socket = usercnt;
-        connectedServer = server;
         connectedSocket = new UserSocket(socket);
         decoder = new ServerProtocol(this);
         System.out.println("USER\tNew User created.");
@@ -66,10 +65,6 @@ public final class User extends Thread{
     
     public MainBrain getGame(){
         return ingame;
-    }
-    
-    public void setGame(MainBrain game){
-        ingame = game;
     }
     
     public ServerProtocol getDecoder(){

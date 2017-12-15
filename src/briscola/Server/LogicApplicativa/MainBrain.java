@@ -20,12 +20,13 @@ public class MainBrain {
     protected ArrayList mazzo;
     private String[] semi = {"d", "c", "s", "b"};
     protected Carta briscola;
-    protected ArrayList<User> users;
+    public ArrayList<User> users;
     public static int nGiocatori;
     public static Writer game;
     public String roomName;
     public static TwoPlayersBrain TwoPBrain;
     public static FourPlayersBrain FourPBrain;
+    public int repeatedGame = 0;
     
     public MainBrain(int ng, ArrayList<User> user) throws IOException{
         System.out.println("MAINBRAIN\tGame for " + ng + " started");
@@ -37,15 +38,10 @@ public class MainBrain {
             addUser(u);
         }
     }
- 
-    private void stampaMazzo(){
-        for(int i = 0; i < 40; i++){
-            Carta c = (Carta) mazzo.get(i);
-            System.out.println(i + ": " + c.getNumero() + " di " + c.getSeme() + ". Briscola: " + c.isBriscola());
-        }
-    }
     
-    private void creaMazzo() throws IOException{
+    public ArrayList<Carta> creaMazzo() throws IOException{
+        mazzo = new ArrayList();
+        mazzo.clear();
         int n, i;
         for(n = 1; n < 11; n++){
             for(i = 0; i < semi.length; i++){
@@ -53,6 +49,7 @@ public class MainBrain {
             }
         }
         Collections.shuffle(mazzo);
+        return mazzo;
     }
     
     public User getHost(){
@@ -61,7 +58,6 @@ public class MainBrain {
     
     public void addUser(User user) throws IOException{
         users.add(user);
-        user.setGame(this);
         if (users.size() == nGiocatori){
             if (nGiocatori == 2) {
                 broadcastMessage(user.getDecoder().sendIsFull(2));

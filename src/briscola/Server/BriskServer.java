@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -49,7 +47,7 @@ public class BriskServer extends Thread{
             while(i < nPlayers ){
                 clientSocket = serverSocket.accept();
                 System.out.println("SERVER\tConnection accepted: " + clientSocket);
-                User player = new User(this, clientSocket);
+                User player = new User(clientSocket);
                 clientsConnected.add(player);
                 i++;
             }
@@ -63,15 +61,17 @@ public class BriskServer extends Thread{
         } catch (IOException ex) {}
     }
     
-    public void broadcastMessage(String message){
+    public void broadcastMessage(String msg){
         for (User user : clientsConnected){
-            user.writeSocket(message);
+            user.writeSocket(msg);
         }
     }
+    
     /*public void disconnectUser(User user){
         usersConnected.remove(user);
         user.suicide();
     }
+    
 
     
     public void updateRooms(){
