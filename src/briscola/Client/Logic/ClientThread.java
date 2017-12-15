@@ -19,16 +19,16 @@ public class ClientThread extends Thread {
     private PrintWriter out;
     
     public ClientThread() {
-        System.out.println("ClientThread active");
+        System.out.println("CLIENT: ClientThread active");
     }
     
     public void connect(String address, int port){
          try {
             socket = new Socket(address, 4444);
-            CentralServerChatter csc = new CentralServerChatter(socket);
+            CentralServerChatter csc = new CentralServerChatter(socket, this);
             //creazione socket
-            System.out.println("ClientThread: started");
-            System.out.println("Client Socket: " + socket);
+            System.out.println("CLIENT: ClientThread: started");
+            System.out.println("CLIENT: Client Socket: " + socket);
 
             //creazione stream di input da socket
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());
@@ -42,22 +42,7 @@ public class ClientThread extends Thread {
     }
     
     public void run() {
-        System.out.println("Entro nel run del clientthread\n");
-        /*try {
-            
-            
-            //ciclo di lettura invio al server e stampa risposta.
-            //avvio del thread
-            
-        } catch (IOException e) {
-        //in seguito ad ogni fallimento il socket deve essere chiusa, altrimenti
-        //verrà chiusa dal metodo run() del thread
-            try {
-                socket.close();
-            } catch(IOException e2){}
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        System.out.println("CLIENT: Entro nel run del clientthread\n");
     }
     
     public void writeToServer(String msg){

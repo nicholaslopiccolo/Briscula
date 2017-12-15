@@ -5,7 +5,13 @@
  */
 package briscola;
 
+
+import briscola.Client.GUI.JPanelAttesa;
+import briscola.Client.GUI.JPanelLogin;
+import briscola.Client.GUI.New2PGame;
+import briscola.Client.GUI.New4PGame;
 import briscola.Client.Logic.*;
+import briscola.Server.BriskServer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -27,23 +33,28 @@ public class Main {
     public static New2PGame new2PGame;
     public static New4PGame new4PGame;
     public static ClientThread clientThread;
-    public static JPanelAttesa attesa = new JPanelAttesa();
+    public static BriskServer serverThread;
+    public static JPanelAttesa attesa;
+    public static int nPlayers;
     
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException  {
+    public static void main(String[] args) throws IOException, InterruptedException  {
         // TODO code application logic here
         clientThread = new ClientThread();
-        login = new JPanelLogin();
-        new2PGame  = new New2PGame();
-        new4PGame  = new New4PGame();
+        login = new JPanelLogin(clientThread);
+        new2PGame  = new New2PGame(clientThread);
+        new4PGame  = new New4PGame(clientThread);
+        attesa = new JPanelAttesa();
         menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        ClientProtocol p = new ClientProtocol(clientThread);
         menu.setUndecorated(true);
         menu.pack();
         menu.add(login);
         menu.setVisible(true);
-        menu.setDefaultCloseOperation(3);
+        menu.setTitle("BRISCULA");
+    
         try {
             playMusic();
         } 

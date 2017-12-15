@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server.LogicApplicativa;
+package briscola.Server.LogicApplicativa;
 
-//import logicaapplicativa.FourPlayersBrain;
-import Server.LogicApplicativa.Writer;
-import centralbriscolaserver.User;
+import briscola.Client.Logic.Carta;
+import briscola.Server.LogicApplicativa.FourPlayersBrain;
+import briscola.Server.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,35 +18,28 @@ public class MainBrain {
     protected ArrayList mazzo;
     private String[] semi = {"d", "c", "s", "b"};
     protected Carta briscola;
-    protected ArrayList<User> users;
-    private int nGiocatori;
-    public static Writer game;
+    public ArrayList<User> users;
+    public static int nGiocatori;
     public String roomName;
+    public static TwoPlayersBrain TwoPBrain;
+    public static FourPlayersBrain FourPBrain;
+    public int repeatedGame = 0;
     
-    public MainBrain(int ng, String name) throws IOException{
+    public MainBrain(int ng, ArrayList<User> user) throws IOException{
+        System.out.println("MAINBRAIN\tGame for " + ng + " started");
         mazzo = new ArrayList();
         users = new ArrayList();
         nGiocatori = ng;
         creaMazzo();
-        this.roomName = name;
-        System.out.println("************************************");
-        System.out.println("Per giocare inserisci semplicemente due cifre per il numero (es: 04, 02, 10, 07) e l'iniziale del seme\n"
-                + "Un esempio di giocata è: 04d, 10s, 03c. Il primo Gioca si riferisci a chi spetta il turno.");
-        System.out.println("************************************\n");
-    }
-
-    public MainBrain() {
-        
-    }
- 
-    private void stampaMazzo(){
-        for(int i = 0; i < 40; i++){
-            Carta c = (Carta) mazzo.get(i);
-            System.out.println(i + ": " + c.getNumero() + " di " + c.getSeme() + ". Briscola: " + c.isBriscola());
+        for(User u : user){
+            u.joinGame(this);
+            addUser(u);
         }
     }
     
-    private void creaMazzo() throws IOException{
+    public ArrayList<Carta> creaMazzo() throws IOException{
+        mazzo = new ArrayList();
+        mazzo.clear();
         int n, i;
         for(n = 1; n < 11; n++){
             for(i = 0; i < semi.length; i++){
@@ -54,6 +47,7 @@ public class MainBrain {
             }
         }
         Collections.shuffle(mazzo);
+        return mazzo;
     }
     
     public User getHost(){
@@ -64,32 +58,24 @@ public class MainBrain {
         users.add(user);
         if (users.size() == nGiocatori){
             if (nGiocatori == 2) {
-                new TwoPlayersBrain(mazzo, users);
+                broadcastMessage(user.getDecoder().sendIsFull(2));
+                TwoPBrain = new TwoPlayersBrain(mazzo, users);
             } else if (nGiocatori == 4) {
-                new FourPlayersBrain(mazzo);
-            }
-            game = new Writer(users);
-            for(int i = 0; i < nGiocatori; i++){
-                //Reader r = new Reader(users.get(i));
+                broadcastMessage(user.getDecoder().sendIsFull(4));
+                FourPBrain = new FourPlayersBrain(mazzo, users);
             }
         }
     }
     
     public void removeUser(User user){
-        getHost().getDecoder().sendExitGame(user.getNickname());
-        if (user.equals(getHost())){
-            destroy();
-        }
-        else {users.remove(user);}
-    }
-    //quando un creatore esce dalla propria stanza essa viene distutta
-    private void destroy() {
-        getHost().getDecoder().sendRemoveRoom(this.roomName);
+        broadcastMessage(getHost().getDecoder().sendExitGame());
+        users.remove(user);
     }
     
     public void broadcastMessage(String pacchetto){
         for (User user : users){
-            user.writeSocket(pacchetto);
+            if(user != null)
+                user.writeSocket(pacchetto);
         }
     }
 }

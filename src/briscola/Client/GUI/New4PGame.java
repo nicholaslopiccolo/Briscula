@@ -5,7 +5,11 @@
  */
 package briscola.Client.GUI;
 
+import briscola.Client.Logic.Carta;
+import briscola.Client.Logic.ClientProtocol;
+import briscola.Client.Logic.ClientThread;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,23 +31,31 @@ public class New4PGame extends javax.swing.JPanel {
     /**
      * Creates new form New4PGame
      */
-    private boolean cardG11played = false;
-    private boolean cardG12played = false;
-    private boolean cardG13played = false;
-    private boolean cardG21played = false;
-    private boolean cardG22played = false;
-    private boolean cardG23played = false;
-    private boolean cardG31played = false;
-    private boolean cardG32played = false;
-    private boolean cardG33played = false;
-    private boolean cardG41played = false;
-    private boolean cardG42played = false;
-    private boolean cardG43played = false;
+    public boolean disegnaBriscola = true;
+    public boolean disegnaMazzo = true;
+    public boolean disegnaCartePreseG1 = false;
+    public boolean disegnaCartePreseG2 = false;
+    public boolean finisci = false;
     
-    private boolean prendiG1 = false;
-    private boolean prendiG2 = false;
-    private boolean prendiCartaG1 = false;
-    private boolean prendiCartaG2 = false;
+    public boolean cardG11played = false;
+    public boolean cardG12played = false;
+    public boolean cardG13played = false;
+    public boolean cardG21played = false;
+    public boolean cardG22played = false;
+    public boolean cardG23played = false;
+    public boolean cardG31played = false;
+    public boolean cardG32played = false;
+    public boolean cardG33played = false;
+    public boolean cardG41played = false;
+    public boolean cardG42played = false;
+    public boolean cardG43played = false;
+    
+    public boolean prendiG1 = false;
+    public boolean prendiG2 = false;
+    public boolean prendiG3 = false;
+    public boolean prendiG4 = false;
+    public boolean prendiCartaG1 = false;
+    public boolean prendiCartaG2 = false;
     
     private boolean pescaG11 = false;
     private boolean pescaG12 = false;
@@ -58,186 +70,136 @@ public class New4PGame extends javax.swing.JPanel {
     private boolean pescaG42 = false;
     private boolean pescaG43 = false;
 
-    private Image imageG11;
-    private Image imageG12;
-    private Image imageG13;
-    private Image imageG21;
-    private Image imageG22;
-    private Image imageG23;
-    private Image imageG31;
-    private Image imageG32;
-    private Image imageG33;
-    private Image imageG41;
-    private Image imageG42;
-    private Image imageG43;
-    private Image cardG1;
-    private Image cardG2;
-    private Image cardBack;
+    public Image imageG11 = null;
+    public Image imageG12 = null;
+    public Image imageG13 = null;
+    public Image imageG21;
+    public Image imageG22;
+    public Image imageG23;
+    public Image imageG31;
+    public Image imageG32;
+    public Image imageG33;
+    public Image imageG41;
+    public Image imageG42;
+    public Image imageG43;
+    public Image cardG1;
+    public Image cardG2;
+    public Image cardG3;
+    public Image cardG4;
+    public Image briscola;
+    public Image cardBack;
+    public Image horizontalCardBack;
     
-    private int cartax;
-    private int cartay;
+    public int cartax;
+    public int cartay;
     private int cartaPescataX;
     private int cartaPescataY;
-    private int cartaGiocataG1x;
-    private int cartaGiocataG1y;
-    private int cartaGiocataG2x;
-    private int cartaGiocataG2y;
+    public int cartaGiocataG1x;
+    public int cartaGiocataG1y;
+    public int cartaGiocataG2x;
+    public int cartaGiocataG2y;
+    public int cartaGiocataG3x;
+    public int cartaGiocataG3y;
+    public int cartaGiocataG4x;
+    public int cartaGiocataG4y;
+    
+    public int puntiS1;
+    public int puntiS2;
+    
     private New4PGame game;
     
+    public Carta carta1;
+    public Carta carta2;
+    public Carta carta3;
+    
     private  BufferedImage [] sfondoTav;
-    private  BufferedImage image;
+    private  BufferedImage bgImage;
     private  int sceltaTav;
     private  Random random;
+    
+    public String player = "";
+    public String turno = "";
+    
+    private ClientThread client;
+    private ClientProtocol protocol;
+    public Thread animazioneIniziale;
 
-    public New4PGame() throws IOException {
+    public New4PGame(ClientThread client) throws IOException {
         initComponents();
         game = this;
+        this.client = client;
         this.setBackground(Color.black);
-        cardBack = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG11 = ImageIO.read(this.getClass().getResource("../Immagini/01d.png"));
-        imageG12 = ImageIO.read(this.getClass().getResource("../Immagini/02d.png"));
-        imageG13 = ImageIO.read(this.getClass().getResource("../Immagini/03d.png"));
-        imageG21 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG22 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG23 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG31 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG32 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG33 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG41 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG42 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
-        imageG43 = ImageIO.read(this.getClass().getResource("../Immagini/yugiohVerticale.png"));
+        
+        protocol = new ClientProtocol(client);
+        
         random = new Random();
+        int i = random.nextInt(2);
+        
+        if(i == 1){
+            imageG21 = paint("yugiohVerticale");
+            imageG22 = paint("yugiohVerticale");
+            imageG23 = paint("yugiohVerticale");
+            imageG31 = paint("yugiohVerticale");
+            imageG32 = paint("yugiohVerticale");
+            imageG33 = paint("yugiohVerticale");
+            imageG41 = paint("yugiohVerticale");
+            imageG42 = paint("yugiohVerticale");
+            imageG43 = paint("yugiohVerticale");
+            cardBack = paint("yugiohVerticale");
+            horizontalCardBack = paint("yugiohOrizzontale");
+        } else {
+            cardBack = paint("pokemonVerticale");
+            imageG21 = paint("pokemonVerticale");
+            imageG22 = paint("pokemonVerticale");
+            imageG23 = paint("pokemonVerticale");
+            imageG31 = paint("pokemonVerticale");
+            imageG32 = paint("pokemonVerticale");
+            imageG33 = paint("pokemonVerticale");
+            imageG41 = paint("pokemonVerticale");
+            imageG42 = paint("pokemonVerticale");
+            imageG43 = paint("pokemonVerticale");
+            horizontalCardBack = paint("pokemonOrizzontale");
+        }
+
+        
         sceltaTav = random.nextInt(4);
-        System.out.println(sceltaTav);
         
         BufferedImage [] sfondoTav = new BufferedImage[4];
         
         try {
-            sfondoTav[0] = ImageIO.read(this.getClass().getResource("../Immagini/tav1.png"));
-            sfondoTav[1] = ImageIO.read(this.getClass().getResource("../Immagini/tav2.png"));
-            sfondoTav[2] = ImageIO.read(this.getClass().getResource("../Immagini/tav3.png"));
-            sfondoTav[3] = ImageIO.read(this.getClass().getResource("../Immagini/tav4.png"));
+            sfondoTav[0] = paint("tav1");
+            sfondoTav[1] = paint("tav2");
+            sfondoTav[2] = paint("tav3");
+            sfondoTav[3] = paint("tav4");
         } catch (IOException ex) {
             Logger.getLogger(JPanelLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        image=sfondoTav[sceltaTav];
-        Thread animazioneIniziale = new Thread(){
-            @Override
-            public void run(){
-                //aspetto che il gioco sia visibile
-                while(!game.isShowing()){
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {}
-                }
-                daiCarte();
-            }
-            
-            private void daiCarte(){
-                boolean g11 = true;
-                boolean g12 = false;
-                boolean g13 = false;
-                boolean g21 = false;
-                boolean g22 = false;
-                boolean g23 = false;
-                boolean g31 = false;
-                boolean g32 = false;
-                boolean g33 = false;
-                boolean g41 = false;
-                boolean g42 = false;
-                boolean g43 = false;
-                //ripristino le coordinate della carta dal mazzo
-                getMazzoCoordinates();
-                //do la carta al G11
-                while(g11){
-                    pescaG11 = true;
-                    //parte l'animazione
-                    repaint();
-                    //quando ha finito di dare la carta al G11, la da al G21
-                    if(!pescaG11){ g11 = false; g21 = true; }
-                }
-                //si ripete per ogni carta dei giocatori
-                getMazzoCoordinates();
-                while(g21){
-                    pescaG21 = true;
-                    repaint();
-                    if(!pescaG21){ g21 = false; g31 = true; }
-                }
-                getMazzoCoordinates();
-                while(g31){
-                    pescaG31 = true;
-                    repaint();
-                    if(!pescaG31){ g31 = false; g41 = true; }
-                }
-                getMazzoCoordinates();
-                while(g41){
-                    pescaG41 = true;
-                    repaint();
-                    if(!pescaG41){ g41 = false; g12 = true; }
-                }
-                getMazzoCoordinates();
-                while(g12){
-                    pescaG12 = true;
-                    repaint();
-                    if(!pescaG12){ g12 = false; g22 = true; }
-                }
-                getMazzoCoordinates();
-                while(g22){
-                    pescaG22 = true;
-                    repaint();
-                    if(!pescaG22){ g22 = false; g32 = true; }
-                }
-                getMazzoCoordinates();
-                while(g32){
-                    pescaG32 = true;
-                    repaint();
-                    if(!pescaG32){ g32 = false; g42 = true; }
-                }
-                getMazzoCoordinates();
-                while(g42){
-                    pescaG42 = true;
-                    repaint();
-                    if(!pescaG42){ g42 = false; g13 = true; }
-                }
-                getMazzoCoordinates();
-                while(g13){
-                    pescaG13 = true;
-                    repaint();
-                    if(!pescaG13){ g13 = false; g23 = true; }
-                }
-                getMazzoCoordinates();
-                while(g23){
-                    pescaG23 = true;
-                    repaint();
-                    if(!pescaG23){ g23 = false; g33 = true; }
-                }
-                getMazzoCoordinates();
-                while(g33){
-                    pescaG33 = true;
-                    repaint();
-                    if(!pescaG33){ g33 = false; g43 = true; }
-                }
-                getMazzoCoordinates();
-                while(g43){
-                    pescaG43 = true;
-                    repaint();
-                    if(!pescaG43){ g43 = false; }
-                }
-            }
-            
-            private void getMazzoCoordinates(){
-                //ripristina le coordinate
-                cartaPescataX = labelMazzo.getLocationOnScreen().x;
-                cartaPescataY = labelMazzo.getLocationOnScreen().y;
-            }
-        };
-        //animazioneIniziale.start(); 
+        bgImage = sfondoTav[sceltaTav];
+        
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(image, 0, 0,getWidth(), getHeight(), null);
+        g.drawImage(bgImage, 0, 0,getWidth(), getHeight(), null);
+        if(disegnaBriscola){
+            g.drawImage(briscola, labelBriscola.getX(), labelBriscola.getY(), this);
+        }
+        if(disegnaMazzo){
+            g.drawImage(horizontalCardBack, labelMazzo.getX(), labelMazzo.getY(), this);
+        }
+        if(disegnaCartePreseG1){
+            if(player.equals("g1") || player.equals("g3"))
+                g.drawImage(horizontalCardBack, labelCartePreseS1.getX(), labelCartePreseS1.getY(), this);
+            else
+                g.drawImage(horizontalCardBack, labelCartePreseS2.getX(), labelCartePreseS2.getY(), this);
+        }
+        if(disegnaCartePreseG2){
+            if(player.equals("g2") || player.equals("g4"))
+                g.drawImage(horizontalCardBack, labelCartePreseS1.getX(), labelCartePreseS1.getY(), this);
+            else
+                g.drawImage(horizontalCardBack, labelCartePreseS2.getX(), labelCartePreseS2.getY(), this);
+        }
         if (cardG11played) {
             spostaCartaG11();
             g.drawImage(imageG11, cartax, cartay, this);
@@ -255,57 +217,47 @@ public class New4PGame extends javax.swing.JPanel {
         }
         if (cardG21played) {
             spostaCartaG21();
-            g.drawImage(imageG21, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG22played) {
             spostaCartaG22();
-            g.drawImage(imageG22, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG23played) {
             spostaCartaG23();
-            g.drawImage(imageG23, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG31played) {
             spostaCartaG31();
-            g.drawImage(imageG31, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG32played) {
             spostaCartaG32();
-            g.drawImage(imageG32, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG33played) {
             spostaCartaG33();
-            g.drawImage(imageG33, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG41played) {
             spostaCartaG41();
-            g.drawImage(imageG41, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG42played) {
             spostaCartaG42();
-            g.drawImage(imageG42, cartax, cartay, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if (cardG43played) {
             spostaCartaG43();
-            g.drawImage(imageG43, cartax, cartay, this);
-            repaint();
-        }
-        if(prendiCartaG1){
-            prendiCartaG1();
-            g.drawImage(cardG1, cartaGiocataG1x, cartaGiocataG1y, this);
-            repaint();
-        }
-        if(prendiCartaG2){
-            prendiCartaG2();
-            g.drawImage(cardG2, cartaGiocataG2x, cartaGiocataG2y, this);
+            g.drawImage(cardBack, cartax, cartay, this);
             repaint();
         }
         if(prendiG1){
@@ -318,39 +270,401 @@ public class New4PGame extends javax.swing.JPanel {
             g.drawImage(cardG2, cartaGiocataG2x, cartaGiocataG2y, this);
             repaint();
         }
-        if (pescaG11) {
-            pescaCartaG11();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
+        if(prendiG3){
+            prendiG3();
+            g.drawImage(cardG3, cartaGiocataG3x, cartaGiocataG3y, this);
             repaint();
         }
-        if (pescaG12) {
-            pescaCartaG12();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
+        if(prendiG4){
+            prendiG4();
+            g.drawImage(cardG4, cartaGiocataG4x, cartaGiocataG4y, this);
             repaint();
         }
-        if (pescaG13) {
-            pescaCartaG13();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
-            repaint();
-        }
-        if (pescaG21) {
-            pescaCartaG21();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
-            repaint();
-        }
-        if (pescaG22) {
-            pescaCartaG22();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
-            repaint();
-        }
-        if (pescaG23) {
-            pescaCartaG23();
-            g.drawImage(cardBack, cartaPescataX, cartaPescataY, this);
-            repaint();
-        }
+        g.setFont(new Font("Nirmala UI", 1, 24));
+        g.setColor(Color.white);
+        g.fillRect(labelCartePreseS1.getX() + 35, labelCartePreseS1.getY() + 75, 75, 25);
+        g.fillRect(labelCartePreseS2.getX() + 35, labelCartePreseS2.getY() + 75, 75, 25);
+        g.setColor(Color.black);
+        g.drawRect(labelCartePreseS1.getX() + 35, labelCartePreseS1.getY() + 75, 75, 25);
+        g.drawRect(labelCartePreseS2.getX() + 35, labelCartePreseS2.getY() + 75, 75, 25);
+        String spazio1 = "";
+        String spazio2 = "";
+        if(puntiS1 < 10)
+            spazio1 = "  ";
+        else if(puntiS1 < 100)
+            spazio1 = " ";
+        else
+            spazio1 = "";
+        if(puntiS2 < 10)
+            spazio2 = "  ";
+        else if(puntiS2 < 100)
+            spazio2 = " ";
+        else spazio2 = "";
+        g.drawString(spazio1 + puntiS1, labelCartePreseS1.getX() + 50, labelCartePreseS1.getY() + 95);
+        g.drawString(spazio2 + puntiS2, labelCartePreseS2.getX() + 50, labelCartePreseS2.getY() + 95);
+        repaint();
+    }
+    
+    public void generaThreadIniziale(){
+        System.out.println("CLIENT\tDo le carte");
+        animazioneIniziale = new Thread(){
+            @Override
+            public void run(){
+                //aspetto che il gioco sia visibile
+//                while(!game.isShowing()){
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException ex) {}
+//                }
+//                System.out.println("CLIENT\tGame is showing");
+                daiCarte();
+            }
+            
+            private void daiCarte(){
+                
+                boolean g11 = false;
+                boolean g12 = false;
+                boolean g13 = false;
+                boolean g21 = false;
+                boolean g22 = false;
+                boolean g23 = false;
+                boolean g31 = false;
+                boolean g32 = false;
+                boolean g33 = false;
+                boolean g41 = false;
+                boolean g42 = false;
+                boolean g43 = false;
+                
+                System.out.println("CLIENT\tEntro in daiCarte()");
+                if(player.equals("g1")){
+                    System.out.println("Player è uguale a 1");
+                    g11 = true;
+                    //ripristino le coordinate della carta dal mazzo
+                    game.getMazzoCoordinates();
+                    //do la carta al G11
+                    while(g11){
+                        pescaG11 = true;
+                        //parte l'animazione
+                        repaint();
+                        //quando ha finito di dare la carta al G11, la da al G21
+                        if(!pescaG11){ g11 = false; g21 = true; }
+                    }
+                    //si ripete per ogni carta dei giocatori
+                    game.getMazzoCoordinates();
+                    while(g21){
+                        pescaG21 = true;
+                        repaint();
+                        if(!pescaG21){ g21 = false; g31 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g31){
+                        pescaG31 = true;
+                        repaint();
+                        if(!pescaG31){ g31 = false; g41 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g41){
+                        pescaG41 = true;
+                        repaint();
+                        if(!pescaG41){ g41 = false; g12 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g12){
+                        pescaG12 = true;
+                        repaint();
+                        if(!pescaG12){ g12 = false; g22 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g22){
+                        pescaG22 = true;
+                        repaint();
+                        if(!pescaG22){ g22 = false; g32 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g32){
+                        pescaG32 = true;
+                        repaint();
+                        if(!pescaG32){ g32 = false; g42 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g42){
+                        pescaG42 = true;
+                        repaint();
+                        if(!pescaG42){ g42 = false; g13 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g13){
+                        pescaG13 = true;
+                        repaint();
+                        if(!pescaG13){ g13 = false; g23 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g23){
+                        pescaG23 = true;
+                        repaint();
+                        if(!pescaG23){ g23 = false; g33 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g33){
+                        pescaG33 = true;
+                        repaint();
+                        if(!pescaG33){ g33 = false; g43 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g43){
+                        pescaG43 = true;
+                        repaint();
+                        if(!pescaG43){ g43 = false; }
+                    }
+                } else if (player.equals("g2")) {
+                    System.out.println("Player è uguale a 2");
+                    g41 = true;
+                    //ripristino le coordinate della carta dal mazzo
+                    game.getMazzoCoordinates();
+                    //do la carta al G12
+                    while(g41){
+                        pescaG41 = true;
+                        //parte l'animazione
+                        repaint();
+                        //quando ha finito di dare la carta al G21, la da al G11
+                        if(!pescaG41){ g41 = false; g11 = true; }
+                    }
+                    //si ripete per ogni carta dei giocatori
+                    game.getMazzoCoordinates();
+                    while(g11){
+                        pescaG11 = true;
+                        repaint();
+                        if(!pescaG11){ g11 = false; g21 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g21){
+                        pescaG21 = true;
+                        repaint();
+                        if(!pescaG21){ g21 = false; g31 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g31){
+                        pescaG31 = true;
+                        repaint();
+                        if(!pescaG31){ g31 = false; g42 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g42){
+                        pescaG42 = true;
+                        repaint();
+                        if(!pescaG42){ g42 = false; g12 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g12){
+                        pescaG12 = true;
+                        repaint();
+                        if(!pescaG12){ g12 = false; g22 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g22){
+                        pescaG22 = true;
+                        repaint();
+                        if(!pescaG22){ g22 = false; g32 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g32){
+                        pescaG32 = true;
+                        repaint();
+                        if(!pescaG32){ g32 = false; g43 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g43){
+                        pescaG43 = true;
+                        repaint();
+                        if(!pescaG43){ g43 = false; g13 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g13){
+                        pescaG13 = true;
+                        repaint();
+                        if(!pescaG13){ g13 = false; g23 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g23){
+                        pescaG23 = true;
+                        repaint();
+                        if(!pescaG23){ g23 = false; g33 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g33){
+                        pescaG33 = true;
+                        repaint();
+                        if(!pescaG33){ g33 = false; }
+                    }
+                } else if (player.equals("g3")) {
+                    System.out.println("Player è uguale a 3");
+                    g31 = true;
+                    //ripristino le coordinate della carta dal mazzo
+                    game.getMazzoCoordinates();
+                    //do la carta al G12
+                    while(g31){
+                        pescaG31 = true;
+                        //parte l'animazione
+                        repaint();
+                        //quando ha finito di dare la carta al G21, la da al G11
+                        if(!pescaG31){ g31 = false; g41 = true; }
+                    }
+                    //si ripete per ogni carta dei giocatori
+                    game.getMazzoCoordinates();
+                    while(g41){
+                        pescaG41 = true;
+                        repaint();
+                        if(!pescaG41){ g41 = false; g11 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g11){
+                        pescaG11 = true;
+                        repaint();
+                        if(!pescaG11){ g11 = false; g21 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g21){
+                        pescaG21 = true;
+                        repaint();
+                        if(!pescaG21){ g21 = false; g32 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g32){
+                        pescaG32 = true;
+                        repaint();
+                        if(!pescaG32){ g32 = false; g42 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g42){
+                        pescaG42 = true;
+                        repaint();
+                        if(!pescaG42){ g42 = false; g12 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g12){
+                        pescaG12 = true;
+                        repaint();
+                        if(!pescaG12){ g12 = false; g22 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g22){
+                        pescaG22 = true;
+                        repaint();
+                        if(!pescaG22){ g22 = false; g33 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g33){
+                        pescaG33 = true;
+                        repaint();
+                        if(!pescaG33){ g33 = false; g43 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g43){
+                        pescaG43 = true;
+                        repaint();
+                        if(!pescaG43){ g43 = false; g13 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g13){
+                        pescaG13 = true;
+                        repaint();
+                        if(!pescaG13){ g13 = false; g23 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g23){
+                        pescaG23 = true;
+                        repaint();
+                        if(!pescaG23){ g23 = false; }
+                    }
+                } else if (player.equals("g4")) {
+                    System.out.println("Player è uguale a 4");
+                    g21 = true;
+                    //ripristino le coordinate della carta dal mazzo
+                    game.getMazzoCoordinates();
+                    //do la carta al G12
+                    while(g21){
+                        pescaG21 = true;
+                        //parte l'animazione
+                        repaint();
+                        //quando ha finito di dare la carta al G21, la da al G11
+                        if(!pescaG21){ g21 = false; g31 = true; }
+                    }
+                    //si ripete per ogni carta dei giocatori
+                    game.getMazzoCoordinates();
+                    while(g31){
+                        pescaG31 = true;
+                        repaint();
+                        if(!pescaG31){ g31 = false; g41 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g41){
+                        pescaG41 = true;
+                        repaint();
+                        if(!pescaG41){ g41 = false; g11 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g11){
+                        pescaG11 = true;
+                        repaint();
+                        if(!pescaG11){ g11 = false; g22 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g22){
+                        pescaG22 = true;
+                        repaint();
+                        if(!pescaG22){ g22 = false; g32 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g32){
+                        pescaG32 = true;
+                        repaint();
+                        if(!pescaG32){ g32 = false; g42 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g42){
+                        pescaG42 = true;
+                        repaint();
+                        if(!pescaG42){ g42 = false; g12 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g12){
+                        pescaG12 = true;
+                        repaint();
+                        if(!pescaG12){ g12 = false; g23 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g23){
+                        pescaG23 = true;
+                        repaint();
+                        if(!pescaG23){ g23 = false; g33 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g33){
+                        pescaG33 = true;
+                        repaint();
+                        if(!pescaG33){ g33 = false; g43 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g43){
+                        pescaG43 = true;
+                        repaint();
+                        if(!pescaG43){ g43 = false; g13 = true; }
+                    }
+                    game.getMazzoCoordinates();
+                    while(g13){
+                        pescaG13 = true;
+                        repaint();
+                        if(!pescaG13){ g13 = false; }
+                    }
+                }
+                try { 
+                    join();
+                } catch (InterruptedException ex) {}
+            }
+        };
     }
 
-    private Image getImage(Icon icon) {
+    public Image getImage(Icon icon) {
         int width = icon.getIconWidth();
         int height = icon.getIconHeight();
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -368,15 +682,9 @@ public class New4PGame extends javax.swing.JPanel {
         }
         if (cartax >= labelCartaGiocataG1.getX() && cartay <= labelCartaGiocataG1.getY()) {
             cardG11played = false;
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-            }
             ImageIcon img = new ImageIcon(imageG11);
             labelCartaGiocataG1.setIcon(img);
-            cartax = labelCartaG21.getLocationOnScreen().x;
-            cartay = labelCartaG21.getLocationOnScreen().y;
-            cardG21played = true;
+            protocol.playCard(player, cartaToString(carta1), 1);
             repaint();
         }
         try {
@@ -402,7 +710,7 @@ public class New4PGame extends javax.swing.JPanel {
             }
             cartax = labelCartaG22.getLocationOnScreen().x;
             cartay = labelCartaG22.getLocationOnScreen().y;
-            cardG22played = true;
+            protocol.playCard(player, cartaToString(carta2), 2);
             repaint();
         }
         try {
@@ -429,7 +737,7 @@ public class New4PGame extends javax.swing.JPanel {
             
             cartax = labelCartaG23.getLocationOnScreen().x;
             cartay = labelCartaG23.getLocationOnScreen().y;
-            cardG23played = true;
+            protocol.playCard(player, cartaToString(carta3), 3);
             repaint();
         }
         try {
@@ -450,12 +758,8 @@ public class New4PGame extends javax.swing.JPanel {
             cardG21played = false;
             ImageIcon img = new ImageIcon(imageG21);
             labelCartaGiocataG2.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
             cartax = labelCartaG31.getLocationOnScreen().x;
             cartay = labelCartaG31.getLocationOnScreen().y;
-            cardG31played = true;
             repaint();
         }
         try {
@@ -476,12 +780,8 @@ public class New4PGame extends javax.swing.JPanel {
             cardG22played = false;
             ImageIcon img = new ImageIcon(imageG22);
             labelCartaGiocataG2.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
             cartax = labelCartaG32.getLocationOnScreen().x;
             cartay = labelCartaG32.getLocationOnScreen().y;
-            cardG32played = true;
             repaint();
         }
         try {
@@ -501,13 +801,9 @@ public class New4PGame extends javax.swing.JPanel {
         if (cartax >= labelCartaGiocataG2.getX() && cartay >= labelCartaGiocataG2.getY()) {
             cardG23played = false;
             ImageIcon img = new ImageIcon(imageG23);
-            labelCartaGiocataG3.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
+            labelCartaGiocataG2.setIcon(img);
             cartax = labelCartaG33.getLocationOnScreen().x;
             cartay = labelCartaG33.getLocationOnScreen().y;
-            cardG33played = true;
             repaint();
         }
         try {
@@ -529,12 +825,8 @@ public class New4PGame extends javax.swing.JPanel {
 
             ImageIcon img = new ImageIcon(imageG31);
             labelCartaGiocataG3.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG41.getLocationOnScreen().x;
-            cartay = labelCartaG41.getLocationOnScreen().y;
-            cardG41played = true;
+            cartax = labelCartaG31.getLocationOnScreen().x;
+            cartay = labelCartaG31.getLocationOnScreen().y;
             repaint();
         }
         try {
@@ -556,12 +848,8 @@ public class New4PGame extends javax.swing.JPanel {
 
             ImageIcon img = new ImageIcon(imageG32);
             labelCartaGiocataG3.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG42.getLocationOnScreen().x;
-            cartay = labelCartaG42.getLocationOnScreen().y;
-            cardG42played = true;
+            cartax = labelCartaG32.getLocationOnScreen().x;
+            cartay = labelCartaG32.getLocationOnScreen().y;
             repaint();
         }
         try {
@@ -583,12 +871,8 @@ public class New4PGame extends javax.swing.JPanel {
 
             ImageIcon img = new ImageIcon(imageG33);
             labelCartaGiocataG3.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG43.getLocationOnScreen().x;
-            cartay = labelCartaG43.getLocationOnScreen().y;
-            cardG43played = true;
+            cartax = labelCartaG33.getLocationOnScreen().x;
+            cartay = labelCartaG33.getLocationOnScreen().y;
             repaint();
         }
         try {
@@ -607,14 +891,10 @@ public class New4PGame extends javax.swing.JPanel {
         }
         if (cartax <= labelCartaGiocataG4.getX() && cartay >= labelCartaGiocataG4.getY()) {
             cardG41played = false;
-
             ImageIcon img = new ImageIcon(imageG41);
             labelCartaGiocataG4.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG12.getLocationOnScreen().x;
-            cartay = labelCartaG12.getLocationOnScreen().y;
+            cartax = labelCartaG42.getLocationOnScreen().x;
+            cartay = labelCartaG42.getLocationOnScreen().y;
             repaint();
         }
         try {
@@ -636,11 +916,8 @@ public class New4PGame extends javax.swing.JPanel {
 
             ImageIcon img = new ImageIcon(imageG42);
             labelCartaGiocataG4.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG13.getLocationOnScreen().x;
-            cartay = labelCartaG13.getLocationOnScreen().y;
+            cartax = labelCartaG42.getLocationOnScreen().x;
+            cartay = labelCartaG42.getLocationOnScreen().y;
             repaint();
         }
         try {
@@ -659,246 +936,15 @@ public class New4PGame extends javax.swing.JPanel {
         }
         if (cartax <= labelCartaGiocataG4.getX() && cartay >= labelCartaGiocataG4.getY()) {
             cardG43played = false;
-
             ImageIcon img = new ImageIcon(imageG43);
             labelCartaGiocataG4.setIcon(img);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {}
-            cartax = labelCartaG11.getLocationOnScreen().x;
-            cartay = labelCartaG11.getLocationOnScreen().y;
+            cartax = labelCartaG43.getLocationOnScreen().x;
+            cartay = labelCartaG43.getLocationOnScreen().y;
             repaint();
         }
         try {
             Thread.sleep(1);
         } catch (InterruptedException ex) {
-        }
-    }
-
-    private void pescaCartaG11() {
-        if (cartaPescataX > labelCartaG11.getX()) {
-            cartaPescataX -= 10;
-        }
-        if (cartaPescataY < labelCartaG11.getY()) {
-            cartaPescataY += 3;
-        }
-        if (cartaPescataX <= labelCartaG11.getX() && cartaPescataY >= labelCartaG11.getY()) {
-            ImageIcon img = new ImageIcon(imageG11);
-            labelCartaG11.setIcon(img);
-            pescaG11 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-
-    private void pescaCartaG12() {
-        if (cartaPescataX > labelCartaG12.getX()) {
-            cartaPescataX -= 7;
-        }
-        if (cartaPescataY < labelCartaG12.getY()) {
-            cartaPescataY += 3;
-        }
-        if (cartaPescataX <= labelCartaG12.getX() && cartaPescataY >= labelCartaG12.getY()) {
-            ImageIcon img = new ImageIcon(imageG12);
-            labelCartaG12.setIcon(img);
-            pescaG12 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-
-    private void pescaCartaG13() {
-        if (cartaPescataX > labelCartaG13.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY < labelCartaG13.getY()) {
-            cartaPescataY += 3;
-        }
-        if (cartaPescataX <= labelCartaG13.getX() && cartaPescataY >= labelCartaG13.getY()) {
-            ImageIcon img = new ImageIcon(imageG13);
-            labelCartaG13.setIcon(img);
-            pescaG13 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-
-    private void pescaCartaG21() {
-        if (cartaPescataX > labelCartaG21.getX()) {
-            cartaPescataX -= 10;
-        }
-        if (cartaPescataY < labelCartaG21.getY()) {
-            cartaPescataY += 8;
-        }
-        if (cartaPescataX <= labelCartaG21.getX() && cartaPescataY >= labelCartaG21.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG21.setIcon(img);
-            
-            pescaG21 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-
-    private void pescaCartaG22() {
-        if (cartaPescataX > labelCartaG22.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY < labelCartaG22.getY()) {
-            cartaPescataY += 5;
-        }
-        if (cartaPescataX <= labelCartaG22.getX() && cartaPescataY >= labelCartaG22.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG22.setIcon(img);
-            pescaG22 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-
-    private void pescaCartaG23() {
-        if (cartaPescataX > labelCartaG23.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY < labelCartaG23.getY()) {
-            cartaPescataY += 10;
-        }
-        if (cartaPescataX <= labelCartaG23.getX() && cartaPescataY >= labelCartaG23.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG23.setIcon(img);
-            pescaG23 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void pescaCartaG31() {
-        if (cartaPescataX > labelCartaG31.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY > labelCartaG31.getY()) {
-            cartaPescataY -= 10;
-        }
-        if (cartaPescataX <= labelCartaG31.getX() && cartaPescataY <= labelCartaG31.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG31.setIcon(img);
-            pescaG31 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void pescaCartaG32() {
-        if (cartaPescataX > labelCartaG32.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY > labelCartaG32.getY()) {
-            cartaPescataY -= 10;
-        }
-        if (cartaPescataX <= labelCartaG32.getX() && cartaPescataY <= labelCartaG32.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG32.setIcon(img);
-            pescaG32 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void pescaCartaG33() {
-        if (cartaPescataX > labelCartaG33.getX()) {
-            cartaPescataX -= 5;
-        }
-        if (cartaPescataY > labelCartaG33.getY()) {
-            cartaPescataY -= 10;
-        }
-        if (cartaPescataX <= labelCartaG33.getX() && cartaPescataY <= labelCartaG33.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG33.setIcon(img);
-            pescaG33 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void pescaCartaG41() {
-        if (cartaPescataX < labelCartaG41.getX()) {
-            cartaPescataX += 5;
-        }
-        if (cartaPescataY < labelCartaG33.getY()) {
-            cartaPescataY += 10;
-        }
-        if (cartaPescataX >= labelCartaG33.getX() && cartaPescataY >= labelCartaG33.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG41.setIcon(img);
-            pescaG41 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void pescaCartaG42() {
-        if (cartaPescataX < labelCartaG42.getX()) {
-            cartaPescataX += 5;
-        }
-        if (cartaPescataY < labelCartaG42.getY()) {
-            cartaPescataY += 10;
-        }
-        if (cartaPescataX >= labelCartaG42.getX() && cartaPescataY >= labelCartaG42.getY()) {
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartaG42.setIcon(img);
-            pescaG42 = false;
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-            }
-        }
-    }
-    
-    private void prendiCartaG1(){
-        labelCartaGiocataG1.setIcon(null);
-        if(cartaGiocataG1x < labelCartaGiocataG2.getLocationOnScreen().x){
-            cartaGiocataG1x += 5;
-        }
-        if(cartaGiocataG1x >= labelCartaGiocataG2.getLocationOnScreen().x){
-            prendiCartaG1 = false;
-            prendiG2 = true;
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {}
-        }
-    }
-    
-    private void prendiCartaG2(){
-        labelCartaGiocataG2.setIcon(null);
-        if(cartaGiocataG2x > labelCartaGiocataG1.getLocationOnScreen().x){
-            cartaGiocataG2x -= 5;
-        }
-        if(cartaGiocataG2x <= labelCartaGiocataG1.getLocationOnScreen().x){
-            prendiCartaG2 = false;
-            prendiG1 = true;
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {}
         }
     }
     
@@ -913,9 +959,11 @@ public class New4PGame extends javax.swing.JPanel {
         if(cartaGiocataG1x >= labelCartePreseS1.getLocationOnScreen().x && 
                 cartaGiocataG1y >= labelCartePreseS1.getLocationOnScreen().y){
             prendiG1 = false;
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartePreseS1.setIcon(img);
-            pescaG11 = true;
+            ImageIcon img = new ImageIcon(horizontalCardBack);
+            if(player.equals("g2") || player.equals("g4"))
+                disegnaCartePreseG1 = true;
+            else
+                disegnaCartePreseG2 = true;
         }
     }
     
@@ -930,14 +978,57 @@ public class New4PGame extends javax.swing.JPanel {
         if(cartaGiocataG2x >= labelCartePreseS2.getLocationOnScreen().x && 
                 cartaGiocataG2y <= labelCartePreseS2.getLocationOnScreen().y){
             prendiG2 = false;
-            ImageIcon img = new ImageIcon(cardBack);
-            labelCartePreseS2.setIcon(img);
+            ImageIcon img = new ImageIcon(horizontalCardBack);
+            if(player.equals("g2") || player.equals("g4"))
+                disegnaCartePreseG2 = true;
+            else
+                disegnaCartePreseG1 = true;
+        }
+    }
+    
+    private void prendiG3(){
+        pulisciCarteGiocate();
+        if(cartaGiocataG3x < labelCartePreseS1.getLocationOnScreen().x){
+            cartaGiocataG3x += 6;
+        }
+        if(cartaGiocataG3y > labelCartePreseS1.getLocationOnScreen().y){
+            cartaGiocataG3y -= 4;
+        }
+        if(cartaGiocataG3x >= labelCartePreseS1.getLocationOnScreen().x && 
+                cartaGiocataG3y <= labelCartePreseS1.getLocationOnScreen().y){
+            prendiG3 = false;
+            ImageIcon img = new ImageIcon(horizontalCardBack);
+            if(player.equals("g2") || player.equals("g4"))
+                disegnaCartePreseG1 = true;
+            else
+                disegnaCartePreseG2 = true;
+        }
+    }
+    
+    private void prendiG4(){
+        pulisciCarteGiocate();
+        if(cartaGiocataG4x < labelCartePreseS2.getLocationOnScreen().x){
+            cartaGiocataG4x += 6;
+        }
+        if(cartaGiocataG4y > labelCartePreseS2.getLocationOnScreen().y){
+            cartaGiocataG4y -= 4;
+        }
+        if(cartaGiocataG4x >= labelCartePreseS2.getLocationOnScreen().x && 
+                cartaGiocataG4y <= labelCartePreseS2.getLocationOnScreen().y){
+            prendiG4 = false;
+            ImageIcon img = new ImageIcon(horizontalCardBack);
+            if(player.equals("g2") || player.equals("g4"))
+                labelCartePreseS2.setIcon(img);
+            else
+                labelCartePreseS1.setIcon(img);
         }
     }
 
     private void pulisciCarteGiocate() {
         labelCartaGiocataG1.setIcon(null);
         labelCartaGiocataG2.setIcon(null);
+        labelCartaGiocataG3.setIcon(null);
+        labelCartaGiocataG4.setIcon(null);
     }
     
     private void getPlayedCardsImages() {
@@ -950,6 +1041,30 @@ public class New4PGame extends javax.swing.JPanel {
         cartaGiocataG2y = labelCartaGiocataG2.getLocationOnScreen().y;
         cartaGiocataG1x = labelCartaGiocataG1.getLocationOnScreen().x;
         cartaGiocataG1y = labelCartaGiocataG1.getLocationOnScreen().y;
+    }
+    
+    public void getMazzoCoordinates(){
+        //ripristina le coordinate
+        cartaPescataX = labelMazzo.getLocationOnScreen().x;
+        cartaPescataY = labelMazzo.getLocationOnScreen().y;
+    }
+    
+    private String cartaToString(Carta c){
+        //calcolo la stringa della carta
+        int numero = c.getNumero();
+        String n = "";
+        if(numero < 10){
+            n = "0" + numero + c.getSmallSeme();
+        } else {
+            n = numero + c.getSmallSeme();
+        }
+        return n;
+    }
+    
+
+    
+    private BufferedImage paint(String carta) throws IOException {
+        return ImageIO.read(this.getClass().getResource("../Immagini/" + carta + ".png"));
     }
 
     /**
@@ -985,82 +1100,54 @@ public class New4PGame extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1195, 1128));
         setLayout(null);
 
-        labelCartaG11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/01d.png"))); // NOI18N
         labelCartaG11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelCartaG11MouseClicked(evt);
             }
         });
         add(labelCartaG11);
-        labelCartaG11.setBounds(380, 560, 0, 0);
+        labelCartaG11.setBounds(380, 560, 140, 204);
 
-        labelCartaG12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/02d.png"))); // NOI18N
         labelCartaG12.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelCartaG12MouseClicked(evt);
             }
         });
         add(labelCartaG12);
-        labelCartaG12.setBounds(530, 560, 0, 0);
+        labelCartaG12.setBounds(530, 560, 140, 204);
 
-        labelCartaG13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/03d.png"))); // NOI18N
         labelCartaG13.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 labelCartaG13MouseClicked(evt);
             }
         });
         add(labelCartaG13);
-        labelCartaG13.setBounds(680, 560, 0, 0);
-
-        labelCartaG31.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG13.setBounds(680, 560, 140, 204);
         add(labelCartaG31);
-        labelCartaG31.setBounds(380, 10, 0, 0);
-
-        labelCartaG32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG31.setBounds(380, 10, 140, 204);
         add(labelCartaG32);
-        labelCartaG32.setBounds(530, 10, 0, 0);
-
-        labelCartaG33.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG32.setBounds(530, 10, 140, 204);
         add(labelCartaG33);
-        labelCartaG33.setBounds(680, 10, 0, 0);
-
-        labelCartaG21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG33.setBounds(680, 10, 140, 204);
         add(labelCartaG21);
-        labelCartaG21.setBounds(40, 280, 0, 0);
-
-        labelCartaG22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG21.setBounds(40, 280, 140, 204);
         add(labelCartaG22);
-        labelCartaG22.setBounds(80, 280, 0, 0);
-
-        labelCartaG23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG22.setBounds(80, 280, 140, 204);
         add(labelCartaG23);
-        labelCartaG23.setBounds(120, 280, 0, 0);
-
-        labelCartaG41.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG23.setBounds(120, 280, 140, 204);
         add(labelCartaG41);
-        labelCartaG41.setBounds(930, 280, 0, 0);
-
-        labelCartaG42.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG41.setBounds(930, 280, 140, 204);
         add(labelCartaG42);
-        labelCartaG42.setBounds(970, 280, 0, 0);
-
-        labelCartaG43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohVerticale.png"))); // NOI18N
+        labelCartaG42.setBounds(970, 280, 140, 204);
         add(labelCartaG43);
-        labelCartaG43.setBounds(1010, 280, 0, 0);
-
-        labelCartePreseS2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohOrrizzontale.png"))); // NOI18N
+        labelCartaG43.setBounds(1010, 280, 140, 204);
         add(labelCartePreseS2);
         labelCartePreseS2.setBounds(40, 90, 204, 140);
-
-        labelCartePreseS1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohOrrizzontale.png"))); // NOI18N
         add(labelCartePreseS1);
         labelCartePreseS1.setBounds(910, 590, 204, 140);
-
-        labelMazzo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/yugiohOrrizzontale.png"))); // NOI18N
         add(labelMazzo);
         labelMazzo.setBounds(930, 90, 204, 140);
 
-        labelBriscola.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Immagini/04d.png"))); // NOI18N
         labelBriscola.setPreferredSize(new java.awt.Dimension(140, 102));
         add(labelBriscola);
         labelBriscola.setBounds(960, 20, 140, 204);
@@ -1082,53 +1169,66 @@ public class New4PGame extends javax.swing.JPanel {
 
     private void labelCartaG11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelCartaG11MouseClicked
         // TODO add your handling code here:
-        cartax = labelCartaG11.getLocationOnScreen().x;
-        cartay = labelCartaG11.getLocationOnScreen().y;
-        imageG11 = getImage(labelCartaG11.getIcon());
-        labelCartaG11.setIcon(null);
-        cardG11played = true;
-        repaint();
+        if(turno.equals(player)){
+            if(labelCartaG11.getIcon() != null){
+                cartax = labelCartaG11.getLocationOnScreen().x;
+                cartay = labelCartaG11.getLocationOnScreen().y;
+                imageG11 = getImage(labelCartaG11.getIcon());
+                labelCartaG11.setIcon(null);
+                cardG11played = true;
+                System.out.println("PREMUTO");
+                repaint();
+            }
+        }
     }//GEN-LAST:event_labelCartaG11MouseClicked
 
     private void labelCartaG12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelCartaG12MouseClicked
         // TODO add your handling code here:
-        cartax = labelCartaG12.getLocationOnScreen().x;
-        cartay = labelCartaG12.getLocationOnScreen().y;
-        imageG12 = getImage(labelCartaG12.getIcon());
-        labelCartaG12.setIcon(null);
-        cardG12played = true;
-        repaint();
+        if(turno.equals(player)){
+            if(labelCartaG11.getIcon() != null){
+                cartax = labelCartaG12.getLocationOnScreen().x;
+                cartay = labelCartaG12.getLocationOnScreen().y;
+                imageG12 = getImage(labelCartaG12.getIcon());
+                labelCartaG12.setIcon(null);
+                cardG12played = true;
+                repaint();
+            }
+        }
     }//GEN-LAST:event_labelCartaG12MouseClicked
 
     private void labelCartaG13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelCartaG13MouseClicked
         // TODO add your handling code here:
-        cartax = labelCartaG13.getLocationOnScreen().x;
-        cartay = labelCartaG13.getLocationOnScreen().y;
-        imageG13 = getImage(labelCartaG13.getIcon());
-        labelCartaG13.setIcon(null);
-        cardG13played = true;
-        repaint();
+        if(turno.equals(player)){
+            if(labelCartaG13.getIcon() != null){
+                cartax = labelCartaG13.getLocationOnScreen().x;
+                cartay = labelCartaG13.getLocationOnScreen().y;
+                imageG13 = getImage(labelCartaG13.getIcon());
+                labelCartaG13.setIcon(null);
+                cardG13played = true;
+                repaint();
+            }
+        }
     }//GEN-LAST:event_labelCartaG13MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel labelBriscola;
-    private javax.swing.JLabel labelCartaG11;
-    private javax.swing.JLabel labelCartaG12;
-    private javax.swing.JLabel labelCartaG13;
-    private javax.swing.JLabel labelCartaG21;
-    private javax.swing.JLabel labelCartaG22;
-    private javax.swing.JLabel labelCartaG23;
-    private javax.swing.JLabel labelCartaG31;
-    private javax.swing.JLabel labelCartaG32;
-    private javax.swing.JLabel labelCartaG33;
-    private javax.swing.JLabel labelCartaG41;
-    private javax.swing.JLabel labelCartaG42;
-    private javax.swing.JLabel labelCartaG43;
-    private javax.swing.JLabel labelCartaGiocataG1;
-    private javax.swing.JLabel labelCartaGiocataG2;
-    private javax.swing.JLabel labelCartaGiocataG3;
-    private javax.swing.JLabel labelCartaGiocataG4;
+    public javax.swing.JLabel labelCartaG11;
+    public javax.swing.JLabel labelCartaG12;
+    public javax.swing.JLabel labelCartaG13;
+    public javax.swing.JLabel labelCartaG21;
+    public javax.swing.JLabel labelCartaG22;
+    public javax.swing.JLabel labelCartaG23;
+    public javax.swing.JLabel labelCartaG31;
+    public javax.swing.JLabel labelCartaG32;
+    public javax.swing.JLabel labelCartaG33;
+    public javax.swing.JLabel labelCartaG41;
+    public javax.swing.JLabel labelCartaG42;
+    public javax.swing.JLabel labelCartaG43;
+    public javax.swing.JLabel labelCartaGiocataG1;
+    public javax.swing.JLabel labelCartaGiocataG2;
+    public javax.swing.JLabel labelCartaGiocataG3;
+    public javax.swing.JLabel labelCartaGiocataG4;
     private javax.swing.JLabel labelCartePreseS1;
     private javax.swing.JLabel labelCartePreseS2;
     private javax.swing.JLabel labelMazzo;

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.LogicApplicativa;
+package briscola.Server.LogicApplicativa;
 
+import briscola.Client.Logic.Carta;
 import java.util.ArrayList;
 
 /**
@@ -25,9 +26,10 @@ public class TwoPlayersABU {
     
     public int calcolaPunti(){
         punti = 0;
+        Carta c;
         for(int i = 0; i < nGiocatori; i++){
-            cartaG1 = (Carta) carte.get(i);
-            punti += cartaG1.getPunti();
+            c = (Carta) carte.get(i);
+            punti += c.getPunti();
         }
         return punti;
     }
@@ -52,6 +54,7 @@ public class TwoPlayersABU {
                 else winner = "g2";
             }
         }
+        
         return winner;
     }
 }

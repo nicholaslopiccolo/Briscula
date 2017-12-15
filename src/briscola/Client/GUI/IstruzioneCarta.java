@@ -25,9 +25,9 @@ public class IstruzioneCarta extends JLabel {
         cartaIstruzione = new BufferedImage[3];
         
         try {
-            cartaIstruzione[0] = ImageIO.read(this.getClass().getResource("../Client/Immagini/1.png"));
-            cartaIstruzione[1] = ImageIO.read(this.getClass().getResource("../Client/Immagini/2.png"));
-            cartaIstruzione[2] = ImageIO.read(this.getClass().getResource("../Client/Immagini/3.png"));
+            cartaIstruzione[0] = ImageIO.read(this.getClass().getResource("../Immagini/1.png"));
+            cartaIstruzione[1] = ImageIO.read(this.getClass().getResource("../Immagini/2.png"));
+            cartaIstruzione[2] = ImageIO.read(this.getClass().getResource("../Immagini/3.png"));
                 
             } catch (IOException ex) {
                 System.out.println("Errore caricamento immagini carta istruzioni");

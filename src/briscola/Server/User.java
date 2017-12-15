@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server;
+package briscola.Server;
 
-import server.LogicApplicativa.MainBrain;
+import briscola.Server.LogicApplicativa.MainBrain;
+import static briscola.Server.ServerProtocol.*;
 import java.io.IOException;
-import server.BriskServer;
-import static centralbriscolaserver.ServerProtocol.*;
+import java.net.Socket;
+
+
 /**
  *
  * @author besterranx
@@ -18,63 +20,42 @@ public final class User extends Thread{
     protected BriskServer connectedServer;
     private String nickname;
     public UserSocket connectedSocket;
+    public Socket socket;
     private MainBrain ingame = null;
     private ServerProtocol decoder;
     
-    /************* CONSTRUCTORS *************/
-    public User(BriskServer server, UserSocket userSocket, String _nickname) throws IOException{
-        connectedSocket = userSocket;
-        connectedServer = server;
-        decoder = new ServerProtocol(this);
-        setName(_nickname);
-        
-        start();
-        connectedServer.updateRooms();
-    }
     
-    public User(BriskServer server, UserSocket usercnt) throws IOException{
-        connectedSocket = usercnt;
-        connectedServer = server;
+    /************* CONSTRUCTORS *************/
+    public User(Socket usercnt) throws IOException{
+        this.socket = usercnt;
+        connectedSocket = new UserSocket(socket);
         decoder = new ServerProtocol(this);
+        System.out.println("USER\tNew User created.");
         start();
-        connectedServer.updateRooms();
     }
     
     /************** OPERATORS ***************/
-    private void decodeMessage(String msg) throws IOException{
-        System.out.println("Decodifico " + decoder.getHeader(msg));
-        System.out.println(decoder.route(msg));
+    
+    private void decodeMessage(String msg){
+        System.out.println("USER\tDecodifico " + decoder.getHeader(msg));
+        decoder.route(msg);
     }
+    
     
     /************** METHODS ****************/
     @Override
     public void run() {
+        System.out.println("SERVER\tEntro nel run dell'user");
         try {
             while (true) {
                 String message = connectedSocket.readFromSocket();
-                System.out.println(message);
+                System.out.println("USER\t" + message);
                 decodeMessage(message);
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
             //resolve
-            if (isInGame()) {
-                leaveGame(ingame);
-            }
-            connectedServer.disconnectUser(this);
-            System.out.println(nickname + " si e disconnesso");
-        }
-    }
-    
-    public String readPlayer_Card(){
-        while(true){
-           try{
-               String pacchetto = connectedSocket.readFromSocket();
-               if (getHeader(pacchetto).equals(cardHeader) && 
-                   getIdentifier(pacchetto).equals(play_card)){
-                   System.out.println(pacchetto);
-                   return pacchetto;
-               }
-           }catch(Exception ex){}
+            System.out.println("USER\t" + nickname + " si e disconnesso");
         }
     }
     
@@ -89,26 +70,24 @@ public final class User extends Thread{
     public String getNickname(){
         return nickname;
     }
+    
     public boolean isInGame(){
         if (ingame == null) return false;
         else return true;
     }
     
-    public void joinGame(String roomName) {
-        MainBrain game = connectedServer.getRoomByName(roomName);
-        if (game != null) {
-            try {
-                game.addUser(this);
-            } catch (Exception ex) {
-            }
-            ingame = game;
-        }
+    public void joinGame(String addr) {
+//        MainBrain game = connectedServer.getRoomByName(roomName);
+//        if (game != null) {
+//            try {
+//                game.addUser(this);
+//            } catch (Exception ex) {
+//            }
+//            ingame = game;
+//        }
     }
     
     public void joinGame(MainBrain game){
-        try{
-            game.addUser(this);
-        }catch(Exception ex){}
         ingame = game;
     }
     
@@ -118,7 +97,9 @@ public final class User extends Thread{
     }
     
     public void writeSocket(String msg){
-        connectedSocket.writeSocket(msg);
+        //può essere null in caso un giocatore esca dalla partita
+        if(connectedSocket != null)
+            connectedSocket.writeSocket(msg);
     }
     
     public void setNickname(String _name){
@@ -126,6 +107,7 @@ public final class User extends Thread{
     }
 
     public void suicide(){
+        getGame().removeUser(this);
         System.out.println(nickname + " e' morto");
         connectedSocket.delete();
         try{

@@ -19,9 +19,11 @@ public class CentralServerChatter extends Thread{
     
     private BufferedReader socket_reader;
     private InputStreamReader ir;
+    private ClientProtocol protocol;
     
-    public CentralServerChatter(Socket s) throws IOException{
-        System.out.println("CSC ON");
+    public CentralServerChatter(Socket s, ClientThread client) throws IOException{
+        protocol = new ClientProtocol(client);
+        System.out.println("CSC\tCSC attivo");
         socket = s;
         socket_reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         start();
@@ -34,7 +36,7 @@ public class CentralServerChatter extends Thread{
             try {
                 Thread.sleep(10);
                 String message = readFromSocket();
-                System.out.println("sto ricevendo " + message);
+                System.out.println("CSC\tSto ricevendo " + message);
                 decodeMessage(message);
             } catch (InterruptedException ex) {
             } catch (IOException ex) {
@@ -48,11 +50,8 @@ public class CentralServerChatter extends Thread{
     }
     
     public void decodeMessage(String msg) throws IOException{
-        ClientProtocol p = new ClientProtocol();
-        System.out.println("messaggio " + msg);
-        System.out.println("Decodifico dal server " + p.route(msg));
-        
-        }
+        protocol.route(msg);
+    }
     
     private void disconnect() throws IOException{
         socket.close();

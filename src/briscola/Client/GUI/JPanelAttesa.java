@@ -5,17 +5,51 @@
  */
 package briscola.Client.GUI;
 
+import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
+
 /**
  *
  * @author t.erra
  */
-public class JPanelAttesa extends javax.swing.JPanel {
+public class JPanelAttesa extends javax.swing.JPanel{
 
     /**
      * Creates new form JPanelAttesa
      */
-    public JPanelAttesa() {
+    private  Thread attendi;
+    public boolean wait = true;
+    
+    public JPanelAttesa() throws InterruptedException {
         initComponents();
+        this.setBackground(Color.black);
+        this.setForeground(Color.red);
+        attendi = new Thread(){
+            @Override
+            public void run(){
+                while(wait){
+                    JLabelAttesa.setText("Attesa dei giocatori");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
+                    JLabelAttesa.setText("Attesa dei giocatori.");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
+                    JLabelAttesa.setText("Attesa dei giocatori..");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
+                    JLabelAttesa.setText("Attesa dei giocatori...");
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {}
+                }
+            }
+        };
+        attendi.start();
     }
 
     /**
@@ -33,48 +67,50 @@ public class JPanelAttesa extends javax.swing.JPanel {
         setBackground(new java.awt.Color(0, 0, 0));
 
         JPanelAvviso.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 0, 51)));
+        JPanelAvviso.setRequestFocusEnabled(false);
 
         JLabelAttesa.setFont(new java.awt.Font("Kristen ITC", 1, 14)); // NOI18N
-        JLabelAttesa.setText("Attesa dei giocatori dei giocatori");
 
         javax.swing.GroupLayout JPanelAvvisoLayout = new javax.swing.GroupLayout(JPanelAvviso);
         JPanelAvviso.setLayout(JPanelAvvisoLayout);
         JPanelAvvisoLayout.setHorizontalGroup(
             JPanelAvvisoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPanelAvvisoLayout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
-                .addComponent(JLabelAttesa)
-                .addGap(43, 43, 43))
+            .addGroup(JPanelAvvisoLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(JLabelAttesa, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         JPanelAvvisoLayout.setVerticalGroup(
             JPanelAvvisoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPanelAvvisoLayout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
+            .addGroup(JPanelAvvisoLayout.createSequentialGroup()
+                .addGap(57, 57, 57)
                 .addComponent(JLabelAttesa, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(208, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(224, 224, 224)
                 .addComponent(JPanelAvviso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(203, 203, 203))
+                .addContainerGap(273, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(144, 144, 144)
+                .addGap(120, 120, 120)
                 .addComponent(JPanelAvviso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addContainerGap(172, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel JLabelAttesa;
+    public static javax.swing.JLabel JLabelAttesa;
     private javax.swing.JPanel JPanelAvviso;
     // End of variables declaration//GEN-END:variables
+
+ 
 }

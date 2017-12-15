@@ -6,12 +6,18 @@
 package briscola.Client.GUI;
 
 import briscola.Client.Logic.ClientProtocol;
-import briscola.Main;
+import briscola.Client.Logic.ClientThread;
 import briscola.Main;
 import static briscola.Main.clientThread;
+import briscola.Server.BriskServer;
+import briscola.Server.User;
+import briscola.Server.UserSocket;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
@@ -34,11 +40,11 @@ public class JPanelLogin extends javax.swing.JPanel {
     private ClientProtocol protocol;
     
     
-    public JPanelLogin()  {
+    public JPanelLogin(ClientThread client)  {
         
         initComponents();
         
-        protocol = new ClientProtocol();
+        protocol = new ClientProtocol(client);
         
         BufferedImage [] cartaIstruzione = new BufferedImage[5];
         
@@ -48,9 +54,7 @@ public class JPanelLogin extends javax.swing.JPanel {
         this.JLabelGiocatori.setLocation(this.JLabelGiocatori.getLocation().x,this.JLabelGiocatori.getLocation().y+150);
         
         JButtonChiudiRegolamento.setVisible(false);
-        
-        JTextFieldNomeStanza.setVisible(false);
-        JLabelNomeStanza.setVisible(false);
+
         
         JButtonAvanti.setOpaque(false);
         JButtonAvanti.setContentAreaFilled(false);
@@ -90,25 +94,18 @@ public class JPanelLogin extends javax.swing.JPanel {
         
         TextNickname.setOpaque(false);
         TextIP.setOpaque(false);
-        JTextFieldNomeStanza.setOpaque(false);
         
 
         
                 
         JPanelCartaIstruzione.setOpaque(false);
         
-//        protocol = new ClientProtocol(clientThread);
-        
         try {
             backgroundImage = ImageIO.read(this.getClass().getResource("../immagini/bg.png"));
         } catch (IOException ex) {}
     }
     
-    public static void updateRooms(String name){
-        String content = roomsTextArea.getText();
-        if(!content.toLowerCase().contains(name.toLowerCase()))
-            roomsTextArea.append(name + "\n");
-    }
+
     
     @Override
     public void paintComponent(Graphics g) {
@@ -145,11 +142,6 @@ public class JPanelLogin extends javax.swing.JPanel {
         JLabelCarta = new IstruzioneCarta();
         JButtonAvanti = new javax.swing.JButton();
         JButtonIndietro = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        roomsTextArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        JTextFieldNomeStanza = new javax.swing.JTextField();
-        JLabelNomeStanza = new javax.swing.JLabel();
 
         ButtonGroupServizio.add(RBClient);
         RBClient.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
@@ -175,7 +167,7 @@ public class JPanelLogin extends javax.swing.JPanel {
             }
         });
 
-        JButtonInvio.setFont(new java.awt.Font("Malgun Gothic", 1, 14)); // NOI18N
+        JButtonInvio.setFont(new java.awt.Font("Malgun Gothic", 1, 36)); // NOI18N
         JButtonInvio.setForeground(new java.awt.Color(255, 255, 255));
         JButtonInvio.setText("Invio");
         JButtonInvio.addActionListener(new java.awt.event.ActionListener() {
@@ -220,7 +212,7 @@ public class JPanelLogin extends javax.swing.JPanel {
         RBFourP.setForeground(new java.awt.Color(255, 255, 255));
         RBFourP.setText("4 Giocatori");
 
-        JButtonRegolamento.setFont(new java.awt.Font("Malgun Gothic", 1, 14)); // NOI18N
+        JButtonRegolamento.setFont(new java.awt.Font("Kristen ITC", 1, 24)); // NOI18N
         JButtonRegolamento.setForeground(new java.awt.Color(255, 255, 255));
         JButtonRegolamento.setText("Regolamento");
         JButtonRegolamento.addActionListener(new java.awt.event.ActionListener() {
@@ -229,7 +221,7 @@ public class JPanelLogin extends javax.swing.JPanel {
             }
         });
 
-        JButtonChiudiRegolamento.setFont(new java.awt.Font("Malgun Gothic", 1, 14)); // NOI18N
+        JButtonChiudiRegolamento.setFont(new java.awt.Font("Kristen ITC", 1, 24)); // NOI18N
         JButtonChiudiRegolamento.setForeground(new java.awt.Color(255, 255, 255));
         JButtonChiudiRegolamento.setText("Chiudi Regolamento");
         JButtonChiudiRegolamento.addActionListener(new java.awt.event.ActionListener() {
@@ -286,30 +278,6 @@ public class JPanelLogin extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        roomsTextArea.setEditable(false);
-        roomsTextArea.setColumns(20);
-        roomsTextArea.setFont(new java.awt.Font("Cambria Math", 0, 16)); // NOI18N
-        roomsTextArea.setRows(5);
-        jScrollPane1.setViewportView(roomsTextArea);
-
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Kristen ITC", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Stanze in esecuzione :");
-
-        JTextFieldNomeStanza.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
-        JTextFieldNomeStanza.setForeground(new java.awt.Color(255, 255, 255));
-        JTextFieldNomeStanza.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JTextFieldNomeStanzaActionPerformed(evt);
-            }
-        });
-
-        JLabelNomeStanza.setBackground(new java.awt.Color(255, 255, 255));
-        JLabelNomeStanza.setFont(new java.awt.Font("Kristen ITC", 1, 15)); // NOI18N
-        JLabelNomeStanza.setForeground(new java.awt.Color(255, 255, 255));
-        JLabelNomeStanza.setText("Inserisci il nome per la tua stanza");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -319,7 +287,6 @@ public class JPanelLogin extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TextNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -337,20 +304,18 @@ public class JPanelLogin extends javax.swing.JPanel {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(RBFourP)
                                             .addComponent(RBTwoP)))))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(JTextFieldNomeStanza, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(JLabelNomeStanza, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(194, 194, 194)
+                                .addComponent(JButtonInvio, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(JPanelCartaIstruzione, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(180, 180, 180))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 165, Short.MAX_VALUE)
                         .addComponent(JButtonChiudiRegolamento)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(243, 243, 243)
                         .addComponent(JButtonRegolamento)
-                        .addGap(448, 448, 448)
-                        .addComponent(JButtonInvio, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(415, 415, 415))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,22 +346,15 @@ public class JPanelLogin extends javax.swing.JPanel {
                                 .addComponent(RBTwoP)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(RBFourP)))
-                        .addGap(27, 27, 27)
-                        .addComponent(JLabelNomeStanza)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JTextFieldNomeStanza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(71, 71, 71)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addComponent(JButtonInvio, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(55, 55, 55)
                         .addComponent(JPanelCartaIstruzione, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JButtonRegolamento)
-                    .addComponent(JButtonChiudiRegolamento)
-                    .addComponent(JButtonInvio, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JButtonChiudiRegolamento))
                 .addGap(30, 30, 30))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -410,14 +368,6 @@ public class JPanelLogin extends javax.swing.JPanel {
         if(RBHost.isSelected()){
             
             TextIP.setEnabled(false);
-            JLabelNomeStanza.setVisible(true);
-            JTextFieldNomeStanza.setVisible(true);
-//        } else {
-//            
-//            TextIP.setEnabled(true);
-//            JLabelNomeStanza.setVisible(false);
-//            JTextFieldNomeStanza.setVisible(false);
-//            JTextFieldNomeStanza.setText("");
             
         }
     }//GEN-LAST:event_RBHostActionPerformed
@@ -431,47 +381,51 @@ public class JPanelLogin extends javax.swing.JPanel {
         }
         else{
             String addr = TextIP.getText();
-            Main.clientThread.connect(addr, 4444);
+            
             nome = TextNickname.getText();
             //  HOST
             if(RBTwoP.isSelected()){
-                clientThread.writeToServer(protocol.createRoom2p(addr));//invio il pacchetto di bootstrap
-//                clientThread.writeToServer(protocol.createRoom2p(addr));//invio il pacchetto per la creazione
+                BriskServer bs = new BriskServer(2);
+                clientThread.connect(addr, 4444);
+                clientThread.writeToServer(protocol.createRoom2p(addr));
+                clientThread.writeToServer(protocol.enterRoom(nome));
+                
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
                 Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                Main.menu.setTitle(nome);
+                Main.nPlayers = 2;
                 
             }
             if(RBFourP.isSelected()){
+                BriskServer bs = new BriskServer(4);
+                clientThread.connect(addr, 4444);
+                clientThread.writeToServer(protocol.createRoom4p(addr));
                 clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
-//                clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
+                
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new4PGame.validate();
                 Main.new4PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-                /*
-                Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.new4PGame);
-                Main.menu.pack();
-                Main.new4PGame.validate();
-                Main.new4PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-                */
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                Main.menu.setTitle(nome);
+                Main.nPlayers = 4;
             }
             //  CLIENT
             if(RBClient.isSelected()){
+                clientThread.connect(addr, 4444);
                 clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
                 Main.menu.getContentPane().removeAll();
                 Main.menu.add(Main.attesa);
                 Main.menu.pack();
-                Main.new2PGame.validate();
-                Main.new2PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                Main.attesa.validate();
+                Main.attesa.repaint();
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                Main.menu.setTitle(nome);
             }
         }   
         ;
@@ -479,18 +433,12 @@ public class JPanelLogin extends javax.swing.JPanel {
 
     private void RBClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBClientActionPerformed
         // TODO add your handling code here
-       
+         TextIP.setEnabled(true);
         
-        TextIP.setEnabled(true);
-        JLabelNomeStanza.setVisible(false);
-        JTextFieldNomeStanza.setVisible(false);
-        JTextFieldNomeStanza.setText("");
+        ButtonGroupGiocatori.clearSelection();
         
         this.RBTwoP.setEnabled(false);
         this.RBFourP.setEnabled(false);
-        
-        
-        
     }//GEN-LAST:event_RBClientActionPerformed
 
     private void JButtonRegolamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonRegolamentoActionPerformed
@@ -540,10 +488,6 @@ public class JPanelLogin extends javax.swing.JPanel {
         this.JButtonRegolamento.setVisible(true);
         this.JButtonChiudiRegolamento.setVisible(false);
     }//GEN-LAST:event_JButtonChiudiRegolamentoActionPerformed
-
-    private void JTextFieldNomeStanzaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextFieldNomeStanzaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JTextFieldNomeStanzaActionPerformed
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup ButtonGroupGiocatori;
@@ -557,18 +501,13 @@ public class JPanelLogin extends javax.swing.JPanel {
     private javax.swing.JLabel JLabelGiocatori;
     private javax.swing.JLabel JLabelIndirizzo;
     private javax.swing.JLabel JLabelNome;
-    private javax.swing.JLabel JLabelNomeStanza;
     private javax.swing.JLabel JLabelScelta;
     private javax.swing.JPanel JPanelCartaIstruzione;
-    private javax.swing.JTextField JTextFieldNomeStanza;
     private javax.swing.JRadioButton RBClient;
     private javax.swing.JRadioButton RBFourP;
     private javax.swing.JRadioButton RBHost;
     private javax.swing.JRadioButton RBTwoP;
     private javax.swing.JTextField TextIP;
     private javax.swing.JTextField TextNickname;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTextArea roomsTextArea;
     // End of variables declaration//GEN-END:variables
 }
