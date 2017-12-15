@@ -24,7 +24,7 @@ public class ClientThread extends Thread {
     
     public void connect(String address, int port){
          try {
-            socket = new Socket("127.0.0.1", 4444);
+            socket = new Socket(address, 4444);
             CentralServerChatter csc = new CentralServerChatter(socket, this);
             //creazione socket
             System.out.println("CLIENT: ClientThread: started");

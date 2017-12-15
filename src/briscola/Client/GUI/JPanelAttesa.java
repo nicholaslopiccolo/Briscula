@@ -6,9 +6,6 @@
 package briscola.Client.GUI;
 
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JPanel;
 
 /**
  *

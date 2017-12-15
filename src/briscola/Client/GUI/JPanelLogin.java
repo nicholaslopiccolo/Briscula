@@ -8,12 +8,10 @@ package briscola.Client.GUI;
 import briscola.Client.Logic.ClientProtocol;
 import briscola.Client.Logic.ClientThread;
 import briscola.Main;
-import static briscola.Main.chatPanel;
 import static briscola.Main.clientThread;
 import briscola.Server.BriskServer;
 import briscola.Server.User;
 import briscola.Server.UserSocket;
-import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,9 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-
-
-
 
 /**
  *
@@ -35,91 +30,80 @@ public class JPanelLogin extends javax.swing.JPanel {
     /**
      * Creates new form JPanelLogin
      */
-    
     private String nome;
     private BufferedImage backgroundImage;
-    private BufferedImage [] cartaIstruzione;
+    private BufferedImage[] cartaIstruzione;
     private ClientProtocol protocol;
-    
-    
-    public JPanelLogin(ClientThread client)  {
-        
+
+    public JPanelLogin(ClientThread client) {
+
         initComponents();
-        
+
         protocol = new ClientProtocol(client);
-        
-        BufferedImage [] cartaIstruzione = new BufferedImage[5];
-        
+
+        BufferedImage[] cartaIstruzione = new BufferedImage[5];
+
         JPanelCartaIstruzione.setVisible(false);
-        
-        this.JLabelScelta.setLocation(this.JLabelScelta.getLocation().x,this.JLabelScelta.getLocation().y-150);
-        this.JLabelGiocatori.setLocation(this.JLabelGiocatori.getLocation().x,this.JLabelGiocatori.getLocation().y+150);
-        
+
+        this.JLabelScelta.setLocation(this.JLabelScelta.getLocation().x, this.JLabelScelta.getLocation().y - 150);
+        this.JLabelGiocatori.setLocation(this.JLabelGiocatori.getLocation().x, this.JLabelGiocatori.getLocation().y + 150);
+
         JButtonChiudiRegolamento.setVisible(false);
-        
-        JTextFieldNomeStanza.setVisible(false);
-        JLabelNomeStanza.setVisible(false);
-        
+
         JButtonAvanti.setOpaque(false);
         JButtonAvanti.setContentAreaFilled(false);
         JButtonAvanti.setBorderPainted(false);
-        
+
         JButtonIndietro.setOpaque(false);
         JButtonIndietro.setContentAreaFilled(false);
         JButtonIndietro.setBorderPainted(false);
-        
+
         JButtonInvio.setOpaque(false);
         JButtonInvio.setContentAreaFilled(false); //to make the content area transparent
         JButtonInvio.setBorderPainted(false);
-        
+
         RBHost.setOpaque(false);
         RBHost.setContentAreaFilled(false);
         RBHost.setBorderPainted(false);
-        
+
         RBClient.setOpaque(false);
         RBClient.setContentAreaFilled(false);
         RBClient.setBorderPainted(false);
-        
+
         RBTwoP.setOpaque(false);
         RBTwoP.setContentAreaFilled(false);
         RBTwoP.setBorderPainted(false);
-        
+
         RBFourP.setOpaque(false);
         RBFourP.setContentAreaFilled(false);
         RBFourP.setBorderPainted(false);
-        
+
         JButtonRegolamento.setOpaque(false);
         JButtonRegolamento.setContentAreaFilled(false);
         JButtonRegolamento.setBorderPainted(false);
-        
+
         JButtonChiudiRegolamento.setOpaque(false);
         JButtonChiudiRegolamento.setContentAreaFilled(false);
         JButtonChiudiRegolamento.setBorderPainted(false);
-        
+
         TextNickname.setOpaque(false);
         TextIP.setOpaque(false);
-        JTextFieldNomeStanza.setOpaque(false);
-        
 
-        
-                
+        jPanelSceltaBg.setVisible(false);
+
         JPanelCartaIstruzione.setOpaque(false);
-        
+
         try {
             backgroundImage = ImageIO.read(this.getClass().getResource("../immagini/bg.png"));
-        } catch (IOException ex) {}
-    }
-    
-    public void attachChatPanel(){
-        Main.menu.add(Main.chatPanel, BorderLayout.EAST);
+        } catch (IOException ex) {
+        }
     }
 
-    
     @Override
     public void paintComponent(Graphics g) {
 
-    super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0,getWidth(), getHeight(), this);
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
 
     /**
@@ -133,6 +117,7 @@ public class JPanelLogin extends javax.swing.JPanel {
 
         ButtonGroupGiocatori = new javax.swing.ButtonGroup();
         ButtonGroupServizio = new javax.swing.ButtonGroup();
+        buttonGroupBg = new javax.swing.ButtonGroup();
         RBClient = new javax.swing.JRadioButton();
         JLabelScelta = new javax.swing.JLabel();
         RBHost = new javax.swing.JRadioButton();
@@ -150,11 +135,14 @@ public class JPanelLogin extends javax.swing.JPanel {
         JLabelCarta = new IstruzioneCarta();
         JButtonAvanti = new javax.swing.JButton();
         JButtonIndietro = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        roomsTextArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        JTextFieldNomeStanza = new javax.swing.JTextField();
-        JLabelNomeStanza = new javax.swing.JLabel();
+        jPanelSceltaBg = new javax.swing.JPanel();
+        jLabelYogioh = new javax.swing.JLabel();
+        jLabelPokemon = new javax.swing.JLabel();
+        jLabelDigimon = new javax.swing.JLabel();
+        RByogioh = new javax.swing.JRadioButton();
+        RBpokemon = new javax.swing.JRadioButton();
+        RBdigimon = new javax.swing.JRadioButton();
+        jButtonSceltaBg = new javax.swing.JButton();
 
         ButtonGroupServizio.add(RBClient);
         RBClient.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
@@ -219,11 +207,21 @@ public class JPanelLogin extends javax.swing.JPanel {
         RBTwoP.setFont(new java.awt.Font("Cambria Math", 0, 15)); // NOI18N
         RBTwoP.setForeground(new java.awt.Color(255, 255, 255));
         RBTwoP.setText("2 Giocatori");
+        RBTwoP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBTwoPActionPerformed(evt);
+            }
+        });
 
         ButtonGroupGiocatori.add(RBFourP);
         RBFourP.setFont(new java.awt.Font("Cambria Math", 0, 15)); // NOI18N
         RBFourP.setForeground(new java.awt.Color(255, 255, 255));
         RBFourP.setText("4 Giocatori");
+        RBFourP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBFourPActionPerformed(evt);
+            }
+        });
 
         JButtonRegolamento.setFont(new java.awt.Font("Malgun Gothic", 1, 14)); // NOI18N
         JButtonRegolamento.setForeground(new java.awt.Color(255, 255, 255));
@@ -291,29 +289,74 @@ public class JPanelLogin extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        roomsTextArea.setEditable(false);
-        roomsTextArea.setColumns(20);
-        roomsTextArea.setFont(new java.awt.Font("Cambria Math", 0, 16)); // NOI18N
-        roomsTextArea.setRows(5);
-        jScrollPane1.setViewportView(roomsTextArea);
+        jLabelYogioh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/briscola/Client/Immagini/yugiohIcon.png"))); // NOI18N
+        jLabelYogioh.setText("jLabel1");
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Kristen ITC", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Stanze in esecuzione :");
+        jLabelPokemon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/briscola/Client/Immagini/pokemonIcon.png"))); // NOI18N
+        jLabelPokemon.setText("jLabel2");
 
-        JTextFieldNomeStanza.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
-        JTextFieldNomeStanza.setForeground(new java.awt.Color(255, 255, 255));
-        JTextFieldNomeStanza.addActionListener(new java.awt.event.ActionListener() {
+        jLabelDigimon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/briscola/Client/Immagini/digimonIcon.png"))); // NOI18N
+        jLabelDigimon.setText("jLabel3");
+
+        buttonGroupBg.add(RByogioh);
+        RByogioh.setText("Yogioh");
+        RByogioh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JTextFieldNomeStanzaActionPerformed(evt);
+                RByogiohActionPerformed(evt);
             }
         });
 
-        JLabelNomeStanza.setBackground(new java.awt.Color(255, 255, 255));
-        JLabelNomeStanza.setFont(new java.awt.Font("Kristen ITC", 1, 15)); // NOI18N
-        JLabelNomeStanza.setForeground(new java.awt.Color(255, 255, 255));
-        JLabelNomeStanza.setText("Inserisci il nome per la tua stanza");
+        buttonGroupBg.add(RBpokemon);
+        RBpokemon.setText("Pokemon");
+
+        buttonGroupBg.add(RBdigimon);
+        RBdigimon.setText("Digimon");
+
+        jButtonSceltaBg.setText("Scegli");
+        jButtonSceltaBg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSceltaBgActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelSceltaBgLayout = new javax.swing.GroupLayout(jPanelSceltaBg);
+        jPanelSceltaBg.setLayout(jPanelSceltaBgLayout);
+        jPanelSceltaBgLayout.setHorizontalGroup(
+            jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSceltaBgLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabelYogioh, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RByogioh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonSceltaBg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(RBpokemon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelPokemon, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabelDigimon, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RBdigimon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelSceltaBgLayout.setVerticalGroup(
+            jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSceltaBgLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelYogioh)
+                    .addComponent(jLabelPokemon)
+                    .addComponent(jLabelDigimon))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelSceltaBgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RByogioh)
+                    .addComponent(RBpokemon)
+                    .addComponent(RBdigimon))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonSceltaBg)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -324,7 +367,6 @@ public class JPanelLogin extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TextNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -341,12 +383,12 @@ public class JPanelLogin extends javax.swing.JPanel {
                                         .addGap(6, 6, 6)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(RBFourP)
-                                            .addComponent(RBTwoP)))))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(JTextFieldNomeStanza, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(JLabelNomeStanza, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
+                                            .addComponent(RBTwoP))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jPanelSceltaBg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(388, 388, 388)))
                         .addComponent(JPanelCartaIstruzione, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(180, 180, 180))
                     .addGroup(layout.createSequentialGroup()
@@ -360,9 +402,9 @@ public class JPanelLogin extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(55, 55, 55)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(JLabelNome)
                             .addComponent(JLabelIndirizzo))
@@ -386,18 +428,11 @@ public class JPanelLogin extends javax.swing.JPanel {
                                 .addComponent(RBTwoP)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(RBFourP)))
-                        .addGap(27, 27, 27)
-                        .addComponent(JLabelNomeStanza)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JTextFieldNomeStanza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(71, 71, 71)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(JPanelCartaIstruzione, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                        .addGap(31, 31, 31)
+                        .addComponent(jPanelSceltaBg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addComponent(JPanelCartaIstruzione, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JButtonRegolamento)
                     .addComponent(JButtonChiudiRegolamento)
@@ -408,102 +443,84 @@ public class JPanelLogin extends javax.swing.JPanel {
 
     private void RBHostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBHostActionPerformed
         // TODO add your handling code here:
-        
+
         this.RBTwoP.setEnabled(true);
         this.RBFourP.setEnabled(true);
-        
-        if(RBHost.isSelected()){
-            
+
+        if (RBHost.isSelected()) {
+
             TextIP.setEnabled(false);
-            JLabelNomeStanza.setVisible(true);
-            JTextFieldNomeStanza.setVisible(true);
-//        } else {
-//            
-//            TextIP.setEnabled(true);
-//            JLabelNomeStanza.setVisible(false);
-//            JTextFieldNomeStanza.setVisible(false);
-//            JTextFieldNomeStanza.setText("");
-            
         }
     }//GEN-LAST:event_RBHostActionPerformed
 
     private void JButtonInvioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonInvioActionPerformed
         //codice relative all'avvio del client
-        
-        if(TextNickname.getText().isEmpty() && TextIP.getText().isEmpty()){
+
+        if (TextNickname.getText().isEmpty() && TextIP.getText().isEmpty()) {
             TextNickname.setText("ERROR");
             TextIP.setText("ERROR");
-        }
-        else{
+        } else {
             String addr = TextIP.getText();
-            
+
             nome = TextNickname.getText();
             //  HOST
-            if(RBTwoP.isSelected()){
+            if (RBTwoP.isSelected()) {
                 BriskServer bs = new BriskServer(2);
                 clientThread.connect(addr, 4444);
-                clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
                 clientThread.writeToServer(protocol.createRoom2p(addr));
                 clientThread.writeToServer(protocol.enterRoom(nome));
-                
+                clientThread.writeToServer(protocol.sendCardBg(Main.new2PGame.bg));
                 Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.attesa, BorderLayout.EAST);
-                Main.menu.add(chatPanel, BorderLayout.WEST);
+                Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
-                
                 Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
             }
-            if(RBFourP.isSelected()){
+            if (RBFourP.isSelected()) {
                 clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
-//                clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
+//              clientThread.writeToServer(protocol.createRoom4p(addr));//invio il pacchetto per la creazione
+                clientThread.writeToServer(protocol.sendCardBg(Main.new2PGame.bg));
                 Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.attesa, BorderLayout.EAST);
-                Main.menu.add(chatPanel, BorderLayout.WEST);
+                Main.menu.add(Main.attesa);
                 Main.menu.pack();
 //                Main.new4PGame.validate();
 //                Main.new4PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 /*
-                Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.new4PGame);
-                Main.menu.pack();
-                Main.new4PGame.validate();
-                Main.new4PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-                */
+                 Main.menu.getContentPane().removeAll();
+                 Main.menu.add(Main.new4PGame);
+                 Main.menu.pack();
+                 Main.new4PGame.validate();
+                 Main.new4PGame.repaint();
+                 Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                 */
             }
             //  CLIENT
-            if(RBClient.isSelected()){
+            if (RBClient.isSelected()) {
                 clientThread.connect(addr, 4444);
                 clientThread.writeToServer(protocol.sendBootstrap(nome));//invio il pacchetto di bootstrap
                 Main.menu.getContentPane().removeAll();
-                Main.menu.add(Main.attesa, BorderLayout.EAST);
-                Main.menu.add(chatPanel, BorderLayout.WEST);
+                Main.menu.add(Main.attesa);
                 Main.menu.pack();
                 Main.new2PGame.validate();
                 Main.new2PGame.repaint();
-                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                Main.menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             }
-        }   
+        }
         ;
     }//GEN-LAST:event_JButtonInvioActionPerformed
 
     private void RBClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBClientActionPerformed
         // TODO add your handling code here
-       
-        
+
         TextIP.setEnabled(true);
-        JLabelNomeStanza.setVisible(false);
-        JTextFieldNomeStanza.setVisible(false);
-        JTextFieldNomeStanza.setText("");
-        
+
         this.RBTwoP.setEnabled(false);
         this.RBFourP.setEnabled(false);
-        
-        
-        
+
+
     }//GEN-LAST:event_RBClientActionPerformed
 
     private void JButtonRegolamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonRegolamentoActionPerformed
@@ -522,21 +539,21 @@ public class JPanelLogin extends javax.swing.JPanel {
 
     private void JButtonAvantiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonAvantiActionPerformed
         // TODO add your handling code here:
-        IstruzioneCarta label = (IstruzioneCarta)JLabelCarta;
-        
-        if (label.immagineSuccessiva() == 2){
+        IstruzioneCarta label = (IstruzioneCarta) JLabelCarta;
+
+        if (label.immagineSuccessiva() == 2) {
             this.JButtonAvanti.setEnabled(false);
             this.JButtonIndietro.setEnabled(true);
         } else {
             this.JButtonAvanti.setEnabled(true);
             this.JButtonIndietro.setEnabled(true);
-        } 
+        }
     }//GEN-LAST:event_JButtonAvantiActionPerformed
 
     private void JButtonIndietroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonIndietroActionPerformed
         // TODO add your handling code here:
-        IstruzioneCarta label = (IstruzioneCarta)JLabelCarta;
-        if (label.immaginePrecedente() == 0){
+        IstruzioneCarta label = (IstruzioneCarta) JLabelCarta;
+        if (label.immaginePrecedente() == 0) {
             this.JButtonIndietro.setEnabled(false);
             this.JButtonAvanti.setEnabled(true);
         } else {
@@ -548,16 +565,41 @@ public class JPanelLogin extends javax.swing.JPanel {
     private void JButtonChiudiRegolamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JButtonChiudiRegolamentoActionPerformed
         // TODO add your handling code here:
         JPanelCartaIstruzione.setVisible(false);
-        
+
         this.JButtonRegolamento.setEnabled(true);
         this.JButtonRegolamento.setVisible(true);
         this.JButtonChiudiRegolamento.setVisible(false);
     }//GEN-LAST:event_JButtonChiudiRegolamentoActionPerformed
 
-    private void JTextFieldNomeStanzaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextFieldNomeStanzaActionPerformed
+    private void RByogiohActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RByogiohActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_JTextFieldNomeStanzaActionPerformed
-   
+    }//GEN-LAST:event_RByogiohActionPerformed
+
+    private void jButtonSceltaBgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSceltaBgActionPerformed
+        if (RByogioh.isSelected()) {
+            Main.new2PGame.bg = 1;
+            jPanelSceltaBg.setVisible(false);
+//             clientThread.writeToServer(protocol.sendBootstrap(nome));
+        } else if (RBpokemon.isSelected()) {
+            Main.new2PGame.bg = 2;
+            jPanelSceltaBg.setVisible(false);
+//             clientThread.writeToServer(protocol.sendBootstrap(nome));
+        } else if (RBdigimon.isSelected()) {
+            Main.new2PGame.bg = 3;
+            jPanelSceltaBg.setVisible(false);
+//          clientThread.writeToServer(protocol.sendBootstrap(nome));
+        }
+
+    }//GEN-LAST:event_jButtonSceltaBgActionPerformed
+
+    private void RBFourPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBFourPActionPerformed
+        jPanelSceltaBg.setVisible(true);
+    }//GEN-LAST:event_RBFourPActionPerformed
+
+    private void RBTwoPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBTwoPActionPerformed
+        jPanelSceltaBg.setVisible(true);
+    }//GEN-LAST:event_RBTwoPActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup ButtonGroupGiocatori;
     private javax.swing.ButtonGroup ButtonGroupServizio;
@@ -570,18 +612,22 @@ public class JPanelLogin extends javax.swing.JPanel {
     private javax.swing.JLabel JLabelGiocatori;
     private javax.swing.JLabel JLabelIndirizzo;
     private javax.swing.JLabel JLabelNome;
-    private javax.swing.JLabel JLabelNomeStanza;
     private javax.swing.JLabel JLabelScelta;
     private javax.swing.JPanel JPanelCartaIstruzione;
-    private javax.swing.JTextField JTextFieldNomeStanza;
     private javax.swing.JRadioButton RBClient;
     private javax.swing.JRadioButton RBFourP;
     private javax.swing.JRadioButton RBHost;
     private javax.swing.JRadioButton RBTwoP;
+    private javax.swing.JRadioButton RBdigimon;
+    private javax.swing.JRadioButton RBpokemon;
+    private javax.swing.JRadioButton RByogioh;
     private javax.swing.JTextField TextIP;
     private javax.swing.JTextField TextNickname;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTextArea roomsTextArea;
+    private javax.swing.ButtonGroup buttonGroupBg;
+    private javax.swing.JButton jButtonSceltaBg;
+    private javax.swing.JLabel jLabelDigimon;
+    private javax.swing.JLabel jLabelPokemon;
+    private javax.swing.JLabel jLabelYogioh;
+    private javax.swing.JPanel jPanelSceltaBg;
     // End of variables declaration//GEN-END:variables
 }
