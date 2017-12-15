@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class FourPlayersABU {
     
-    private Carta[] carte;
+    private ArrayList carte;
     private int punti;
     private Carta cartaG1;
     private Carta cartaG2;
@@ -28,18 +28,18 @@ public class FourPlayersABU {
     public int calcolaPunti(){
         punti = 0;
         for(int i = 0; i < 4; i++){
-            cartaG1 = carte[i];
+            cartaG1 = (Carta) carte.get(i);
             punti += cartaG1.getPunti();
         }
         return punti;
     }
     
-    public String vincitoreRound(Carta[] cGiocate, String turno){
+    public String vincitoreRound(ArrayList cGiocate, String turno){
         carte = cGiocate;
-        cartaG1 = cGiocate[0];
-        cartaG2 = cGiocate[1];
-        cartaG3 = cGiocate[2];
-        cartaG4 = cGiocate[3]; 
+        cartaG1 = (Carta) cGiocate.get(0);
+        cartaG2 = (Carta) cGiocate.get(1); 
+        cartaG3 = (Carta) cGiocate.get(2); 
+        cartaG4 = (Carta) cGiocate.get(3); 
       
         //g1 = si, g2 = no, g3 = no, g4 = no
         if(cartaG1.isBriscola() && !cartaG2.isBriscola() && !cartaG3.isBriscola() && !cartaG4.isBriscola()){

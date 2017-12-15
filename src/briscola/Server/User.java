@@ -26,8 +26,9 @@ public final class User extends Thread{
     
     
     /************* CONSTRUCTORS *************/
-    public User(Socket usercnt) throws IOException{
+    public User(BriskServer server, Socket usercnt) throws IOException{
         this.socket = usercnt;
+        connectedServer = server;
         connectedSocket = new UserSocket(socket);
         decoder = new ServerProtocol(this);
         System.out.println("USER\tNew User created.");
@@ -55,12 +56,20 @@ public final class User extends Thread{
         } catch (IOException ex) {
             System.out.println(ex.toString());
             //resolve
+            if (isInGame()) {
+                leaveGame(ingame);
+            }
+//            connectedServer.disconnectUser(this);
             System.out.println("USER\t" + nickname + " si e disconnesso");
         }
     }
     
     public MainBrain getGame(){
         return ingame;
+    }
+    
+    public void setGame(MainBrain game){
+        ingame = game;
     }
     
     public ServerProtocol getDecoder(){
@@ -88,6 +97,9 @@ public final class User extends Thread{
     }
     
     public void joinGame(MainBrain game){
+        try{
+            game.addUser(this);
+        }catch(Exception ex){}
         ingame = game;
     }
     
@@ -97,9 +109,7 @@ public final class User extends Thread{
     }
     
     public void writeSocket(String msg){
-        //può essere null in caso un giocatore esca dalla partita
-        if(connectedSocket != null)
-            connectedSocket.writeSocket(msg);
+        connectedSocket.writeSocket(msg);
     }
     
     public void setNickname(String _name){
@@ -107,7 +117,6 @@ public final class User extends Thread{
     }
 
     public void suicide(){
-        getGame().removeUser(this);
         System.out.println(nickname + " e' morto");
         connectedSocket.delete();
         try{

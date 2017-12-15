@@ -9,8 +9,6 @@ import briscola.Client.Logic.Carta;
 import briscola.Server.LogicApplicativa.MainBrain;
 import briscola.Server.LogicApplicativa.TwoPlayersBrain;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,10 +29,6 @@ public class ServerProtocol {
         public static final String player = "usr.";
         public static final String dontDrawMazzo = "maz.";
         public static final String dontDrawBriscola = "brk.";
-        public static final String endGame = "end.";
-        public static final String restartGame = "rst.";
-        public static final String finish = "fin.";
-        public static final String punti = "scr.";
     
     public static final String winRound = "05.";
     public static final String playCard = "";
@@ -49,10 +43,13 @@ public class ServerProtocol {
     public static final String briscola = "11.";
     
     public static final String roomHeader = "12.";
-    public static final String enterRoom = "ent.";
+    public static final String enterRoom = "ent.";//12.ent.roomname
+//    public static final String sync_room = "syn.";
+//    public static final String get_room_name = "get.";
     public static final String create_room_2p = "cr2.";
     public static final String create_room_4p = "cr4.";
     public static final String room_full = "fll.";
+    public static final String remove_room = "rmv.";
     
     
     private User user;
@@ -89,14 +86,11 @@ public class ServerProtocol {
                 identifier = getIdentifier(msg);
                 System.out.println("SERVERPROTOCOL\tIdentidier: " + identifier);
                 switch(identifier) {
-                    case exitGame: {user.suicide(); break;}
-                    case restartGame: { restartGame(getContentId(msg)); break;}
+                    case exitGame: {sendExitGame(msg); break;}
                 }
                 break;
             }
-            
             case winRound: { sendWonRound(msg); break;}
-            
             case cardHeader: {
                 identifier = getIdentifier(msg);
                 switch(identifier){
@@ -107,9 +101,7 @@ public class ServerProtocol {
                 }
                 break;
             }
-            
 //            case messagechat: { pacchetto = messageChat(msg); break;}
-
             case roomHeader: {
                 identifier = getIdentifier(msg);
                 System.out.println("SERVERPROTOCOL\tIdentidier: " + identifier);
@@ -118,6 +110,11 @@ public class ServerProtocol {
                     case create_room_4p: {receiveRoom4p(msg);break;}
                     case enterRoom: {receiveEnterRoom(msg); break;}
                 }
+                break;
+            }
+            
+            case messagechat:{
+                broadcastChat(msg);
                 break;
             }
             default: { System.out.println("SERVERPROTOCOL\tERROR: BAD HEADER"); break; }
@@ -152,6 +149,12 @@ public class ServerProtocol {
         user.getGame().broadcastMessage(pacchetto);
     }
     
+    public void sendExitGame(String utente) {
+        pacchetto = gameHeader + exitGame + utente;
+        System.out.println("SERVERPROTOCOL\tSto Inviando" + pacchetto);
+        user.getGame().broadcastMessage(pacchetto);
+    }
+    
     public void sendChiSono(String player){
         pacchetto = gameHeader + this.player + player;
         System.out.println("SERVERPROTOCOL\tSto Inviando" + pacchetto);
@@ -179,30 +182,6 @@ public class ServerProtocol {
     public String sendDontDrawBriscola(){
         pacchetto = gameHeader + dontDrawBriscola;
         System.out.println("SERVERPROTOCOL\tInvio: " + pacchetto);
-        return pacchetto;
-    }
-    
-    public String sendPunti(int puntiG1, int puntiG2){
-        pacchetto = gameHeader + punti + puntiG1 + "." + puntiG2;
-        System.out.println("SERVERPROTOCOL\tSto Inviando: " + pacchetto);
-        return pacchetto;
-    }
-    
-    public String sendEndGame(){
-        pacchetto = gameHeader + endGame;
-        System.out.println("SERVERPROTOCOL\tInvio: " + pacchetto);
-        return pacchetto;
-    }
-    
-    public String sendFinisci(){
-        pacchetto = gameHeader + finish;
-        System.out.println("SERVERPROTOCOL\tInvio: " + pacchetto);
-        return pacchetto;
-    }
-    
-    public String sendExitGame(){
-        pacchetto = gameHeader + exitGame;
-        System.out.println("SERVERPROTOCOL\tSto inviando: " + pacchetto);
         return pacchetto;
     }
     
@@ -234,11 +213,13 @@ public class ServerProtocol {
     public void receiveRoom2p(String msg) {
         String ip = getContentId(msg);
         System.out.println("SERVERPROTOCOL\tNuovo room da due creata " + ip);
+//        user.connectedServer.createRoom(2, user);
     }
     
     public void receiveRoom4p(String msg) {
         String ip = getContentId(msg);
         System.out.println("SERVERPROTOCOL\tNuovo room da quattro creata: " + ip);
+//        user.connectedServer.createRoom(4, ip, user);
     }
     
     private void receiveBootstrap(String msg) {
@@ -255,7 +236,7 @@ public class ServerProtocol {
         if(MainBrain.nGiocatori == 2){
             MainBrain.TwoPBrain.giocaCarta(player, stringToCarta(carta), position);
         } else if(MainBrain.nGiocatori == 4){
-            MainBrain.FourPBrain.giocaCarta(player, stringToCarta(carta), position);
+//            MainBrain.FourPBrain.carteGiocate.add(stringToCarta(carta));
         }
     }
     
@@ -268,39 +249,11 @@ public class ServerProtocol {
         } catch (IOException ex) {}
         return null;
     }
-    
-    private void restartGame(String players){
-        int p = Integer.parseInt(players);
-        if(p == 2){
-            if(user.getGame().TwoPBrain.nGame < 2){
-                ArrayList<Carta> mazzo = creaMazzo();
-                user.getGame().TwoPBrain.nGame++;
-                user.getGame().TwoPBrain.startNewGame(mazzo);
-            }
-            else{
-                user.getGame().TwoPBrain.broadcastMessage(sendFinisci());
-            }
-        } else {
-//            user.getGame().FourPBrain.nGame++;
-        }
-    }
-    
-    private ArrayList<Carta> creaMazzo(){
-        ArrayList<Carta> mazzo = new ArrayList();
-        String[] semi = {"d", "c", "s", "b"};
-        mazzo.clear();
-        int n, i;
-        for(n = 1; n < 11; n++){
-            for(i = 0; i < semi.length; i++){
-                try {
-                    mazzo.add(new Carta(n, semi[i]));
-                } catch (IOException ex) {}
-            }
-        }
-        Collections.shuffle(mazzo);
-        return mazzo;
-    }
 
- 
-    
+    private void broadcastChat(String msg) {
+        if (user == null) System.out.println("user null");
+        String message = messagechat+getContent(msg);
+        System.out.println("Server sending message:"+message);
+        user.connectedServer.broadcastMessage(messagechat+user.getNickname()+":"+getContent(msg));
+    }
 }

@@ -59,10 +59,8 @@ public class UserSocket{
     }
     
     protected void writeSocket(String msg){
-        if(socket_writer != null){
-            socket_writer.println(msg);
-            socket_writer.flush();
-        }
+        socket_writer.println(msg);
+        socket_writer.flush();
     }
     
     public void delete(){

@@ -26,10 +26,9 @@ public class TwoPlayersABU {
     
     public int calcolaPunti(){
         punti = 0;
-        Carta c;
         for(int i = 0; i < nGiocatori; i++){
-            c = (Carta) carte.get(i);
-            punti += c.getPunti();
+            cartaG1 = (Carta) carte.get(i);
+            punti += cartaG1.getPunti();
         }
         return punti;
     }

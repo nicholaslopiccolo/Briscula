@@ -4,9 +4,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.LogicApplicativa;
+package briscola.Server.LogicApplicativa;
 
-import centralbriscolaserver.User;
+import briscola.Server.User;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,11 +36,9 @@ public class Reader extends Thread{
                 String message = reader.readLine();
                 System.out.println(message);
                 decodeMessage(message);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
+            catch (InterruptedException ex) {} 
+            catch (IOException ex) {}
         }
     }
     

@@ -46,10 +46,10 @@ public class BriskServer extends Thread{
             clientsConnected = new ArrayList();
             clientsNames = new ArrayList();
             int i = 0;
-            while(i < nPlayers){
+            while(i < nPlayers ){
                 clientSocket = serverSocket.accept();
                 System.out.println("SERVER\tConnection accepted: " + clientSocket);
-                User player = new User(clientSocket);
+                User player = new User(this, clientSocket);
                 clientsConnected.add(player);
                 i++;
             }
@@ -62,4 +62,52 @@ public class BriskServer extends Thread{
             MainBrain mb = new MainBrain(nPlayers, clientsConnected);
         } catch (IOException ex) {}
     }
+    
+    public void broadcastMessage(String message){
+        for (User user : clientsConnected){
+            user.writeSocket(message);
+        }
+    }
+    /*public void disconnectUser(User user){
+        usersConnected.remove(user);
+        user.suicide();
+    }
+
+    
+    public void updateRooms(){
+        System.out.println("Aggiorno rooms");
+        if(rooms.size() > 0){
+            for (MainBrain room : rooms){
+                System.out.println("Scrivo la room " + room.roomName);
+                broadcastMessage("12.get." + room.roomName);
+            }
+        }
+    }
+    
+    public MainBrain getRoomByName(String name){
+        MainBrain targetRoom = null;
+        for (MainBrain room : rooms){
+            if (room.roomName.equals(name)) targetRoom = room;
+        }
+        return targetRoom;
+    }
+    
+    public void createRoom(int nPlayers, User host){
+        MainBrain room = null;
+        try {
+            room = new MainBrain(nPlayers, host);
+            rooms.add(room);
+            host.joinGame(room);
+            System.out.println(host.getNickname() + " e entrato nella stanza " + host);
+            updateRooms();
+        } catch (Exception ex) {}
+    }
+
+    public String getRooms() {
+        String dat_room = "";
+        for (MainBrain mainbrain : rooms){
+            dat_room += mainbrain.roomName + "-";
+        }
+        return dat_room;
+    }*/
 }
